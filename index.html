@@ -30,7 +30,7 @@
   .card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
   .card-title { font-size: 13px; font-weight: 600; color: var(--sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  .running-card { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow:0 4px 20px rgba(99,102,241,0.3); }
+  .running-card { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
   .running-label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
   .running-cat { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
   .running-time { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 2px; }
@@ -41,7 +41,7 @@
   .cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .cat-btn { display: flex; flex-direction: column; align-items: center; padding: 14px 8px; border-radius: 14px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; background: var(--bg); }
   .cat-btn:active { transform: scale(0.95); }
-  .cat-btn.selected { border-color: currentColor; background: white; }
+  .cat-btn.running { border-color: currentColor; background: white; }
   .cat-icon { font-size: 24px; margin-bottom: 4px; }
   .cat-name { font-size: 12px; font-weight: 600; }
 
@@ -191,7 +191,7 @@
     <div class="card-title">导出数据</div>
     <button class="export-btn" onclick="exportCSV()">
       <div class="export-icon" style="background:#dcfce7;">📊</div>
-      <div class="export-info"><div class="export-name">导出 CSV</div><div class="export-desc">可用 Excel / Numbers 打开</div></div>
+      <div class="export-info"><div class="export-name">导出 CSV</div><div class="export-desc">可用 Excel / Numbers打开</div></div>
     </button>
     <button class="export-btn" onclick="exportJSON()">
       <div class="export-icon" style="background:#dbeafe;">📋</div>
@@ -205,15 +205,14 @@
       <input type="text" class="form-input" id="newCatName" placeholder="分类名称" style="flex:1;">
       <input type="text" class="form-input" id="newCatIcon" placeholder="图标" style="width:60px;text-align:center;">
       <input type="color" id="newCatColor" value="#6366f1" style="width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;padding:2px;">
-    </div>
-    <button class="btn-primary" style="margin-top:10px;" onclick="addCategory()">添加分类</button>
+    </div><button class="btn-primary" style="margin-top:10px;" onclick="addCategory()">添加分类</button>
   </div>
 </div>
 
 <!-- 底部导航 -->
 <nav class="nav">
   <button class="nav-btn active" onclick="switchPage('home',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 1215 22"/></svg>
     首页
   </button>
   <button class="nav-btn" onclick="switchPage('history',this)">
@@ -265,7 +264,7 @@
 
 <script>
 const SUPABASE_URL = 'https://buyrevhbxypsekpmctmj.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1eXJldmhieHlwc2VrcG1jdG1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNTc3ODksImV4cCI6MjA5MTczMzc4OX0.HbsxUMJZ4wVK1aVFLRo0Zc3emG-sthZ_fJVJ1oRFSlk';
+const SUPABASE_KEY = 'sb_publishable_aDBUcvGvxxxyr1XS37JX3g_WnE3s6x-';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let categories = [];
@@ -275,6 +274,7 @@ let currentStatTab = 'day';
 let editingId = null;
 let barChartInstance = null;
 
+// 初始化
 async function init() {
   const today = new Date();
   document.getElementById('headerDate').textContent = formatDateCN(today);
@@ -283,10 +283,11 @@ async function init() {
   document.getElementById('historyDate').addEventListener('change', loadHistory);
 
   await loadCategories();
-  checkRunning();
+  await checkRunning();
   loadHistory();
 }
 
+// 工具函数
 function toDateStr(d) { return d.toISOString().split('T')[0]; }
 function formatDateCN(d) {
   const days = ['周日','周一','周二','周三','周四','周五','周六'];
@@ -312,6 +313,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// 页面切换
 function switchPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -322,6 +324,7 @@ function switchPage(name, btn) {
   if (name === 'export') renderCatManage();
 }
 
+// 加载分类
 async function loadCategories() {
   const { data } = await sb.from('categories').select('*').order('created_at');
   categories = data || [];
@@ -332,12 +335,14 @@ async function loadCategories() {
 
 function renderCatsGrid() {
   const grid = document.getElementById('catsGrid');
-  grid.innerHTML = categories.map(c => `
-    <button class="cat-btn" style="color:${c.color};" onclick="quickStart('${c.id}')">
-      <span class="cat-icon">${c.icon}</span>
-      <span class="cat-name">${c.name}</span>
-    </button>
-  `).join('');
+  grid.innerHTML = categories.map(c => {
+    const isRunning = runningRecord && runningRecord.category_id === c.id;
+    return `
+      <button class="cat-btn ${isRunning ? 'running' : ''}" style="color:${c.color};" onclick="quickStart('${c.id}')">
+        <span class="cat-icon">${c.icon}${isRunning ? '▶' : ''}</span>
+        <span class="cat-name">${c.name}</span>
+      </button>`;
+  }).join('');
 }
 
 function renderCatSelect(id) {
@@ -346,29 +351,43 @@ function renderCatSelect(id) {
   sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
 }
 
+// 检查是否有正在运行的计时
 async function checkRunning() {
   const { data } = await sb.from('records').select('*').eq('is_running', true).maybeSingle();
-  if (data) { runningRecord = data; startTimer(); }
+  if (data) {
+    runningRecord = data;
+    startTimer();
+  } else {
+    runningRecord = null;
+    clearInterval(timerInterval);
+    document.getElementById('runningCard').innerHTML = '';
+  }
+  renderCatsGrid();
 }
 
+// ✅ 核心：调用 smart_toggle_record 函数
 async function quickStart(catId) {
-  if (runningRecord) { showToast('请先停止当前计时'); return; }
-  const cat = categories.find(c => c.id === catId);
-  const now = new Date();
-  const { data, error } = await sb.from('records').insert({
-    date: toDateStr(now),
-    start_time: now.toTimeString().slice(0,5),
-    category_id: catId,
-    category_name: cat.name,
-    is_running: true
-  }).select().single();
-  if (error) { showToast('启动失败'); return; }
-  runningRecord = data;
-  startTimer();
-  showToast(`开始记录：${cat.icon} ${cat.name}`);
+  const { data, error } = await sb.rpc('smart_toggle_record', { cat_id: catId });
+  if (error) { showToast('操作失败：' + error.message); return; }
+
+  if (data.action === 'started') {
+    showToast(`▶️ 开始：${data.category_name}`);
+    await checkRunning();} else if (data.action === 'stopped') {
+    showToast(`⏹ 已停止，记录 ${fmtDur(data.duration_minutes)}`);
+    runningRecord = null;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    document.getElementById('runningCard').innerHTML = '';
+    renderCatsGrid();
+
+  } else if (data.action === 'switched') {
+    showToast(`🔄 切换到：${data.started_category_name}`);
+    await checkRunning();
+  }
 }
 
 function startTimer() {
+  clearInterval(timerInterval);
   renderRunning();
   timerInterval = setInterval(renderRunning, 1000);
 }
@@ -388,21 +407,11 @@ function renderRunning() {
       <div class="running-cat">${cat.icon||'⏱'} ${runningRecord.category_name}</div>
       <div class="running-time">${h}:${m}:${s}</div>
       <div class="running-start">开始于 ${fmtTime(runningRecord.start_time)}</div>
-      <button class="stop-btn" onclick="stopTimer()">⏹ 停止计时</button>
+      <button class="stop-btn" onclick="quickStart('${runningRecord.category_id}')">⏹ 停止计时</button>
     </div>`;
 }
 
-async function stopTimer() {
-  if (!runningRecord) return;
-  clearInterval(timerInterval);
-  const now = new Date();
-  const endTime = now.toTimeString().slice(0,5);
-  const dur = calcMins(runningRecord.start_time, endTime);
-  await sb.from('records').update({ end_time: endTime, duration_minutes: dur, is_running: false }).eq('id', runningRecord.id);
-  showToast(`已记录 ${fmtDur(dur)}`);
-  runningRecord = null;document.getElementById('runningCard').innerHTML = '';
-}
-
+// 手动添加
 async function addRecord() {
   const date = document.getElementById('fDate').value;
   const start = document.getElementById('fStart').value;
@@ -413,7 +422,11 @@ async function addRecord() {
   if (end <= start) { showToast('结束时间必须晚于开始时间'); return; }
   const cat = categories.find(c => c.id === catId);
   const dur = calcMins(start, end);
-  const { error } = await sb.from('records').insert({ date, start_time: start, end_time: end, duration_minutes: dur, category_id: catId, category_name: cat.name, note, is_running: false });
+  const { error } = await sb.from('records').insert({
+    date, start_time: start, end_time: end,
+    duration_minutes: dur, category_id: catId,
+    category_name: cat.name, note, is_running: false
+  });
   if (error) { showToast('添加失败'); return; }
   showToast('✅ 添加成功');
   document.getElementById('fStart').value = '';
@@ -421,6 +434,7 @@ async function addRecord() {
   document.getElementById('fNote').value = '';
 }
 
+// 历史记录
 async function loadHistory() {
   const date = document.getElementById('historyDate').value;
   const list = document.getElementById('historyList');
@@ -448,6 +462,7 @@ async function loadHistory() {
   }).join('')}</div>`;
 }
 
+// 删除
 async function deleteRecord(id) {
   if (!confirm('确认删除？')) return;
   await sb.from('records').delete().eq('id', id);
@@ -455,6 +470,7 @@ async function deleteRecord(id) {
   loadHistory();
 }
 
+// 编辑
 async function openEdit(id) {
   const { data } = await sb.from('records').select('*').eq('id', id).single();
   if (!data) return;
@@ -464,8 +480,7 @@ async function openEdit(id) {
   document.getElementById('eEnd').value = data.end_time?.slice(0,5) || '';
   document.getElementById('eNote').value = data.note || '';
   renderCatSelect('eCat');
-  document.getElementById('eCat').value = data.category_id;
-  document.getElementById('editModal').classList.add('show');
+  document.getElementById('eCat').value = data.category_id;document.getElementById('editModal').classList.add('show');
 }
 
 function closeModal() { document.getElementById('editModal').classList.remove('show'); }
@@ -479,12 +494,17 @@ async function saveEdit() {
   if (!date || !start || !end) { showToast('请填写完整'); return; }
   const cat = categories.find(c => c.id === catId);
   const dur = calcMins(start, end);
-  await sb.from('records').update({ date, start_time: start, end_time: end, duration_minutes: dur, category_id: catId, category_name: cat.name, note }).eq('id', editingId);
+  await sb.from('records').update({
+    date, start_time: start, end_time: end,
+    duration_minutes: dur, category_id: catId,
+    category_name: cat.name, note
+  }).eq('id', editingId);
   showToast('✅ 已保存');
   closeModal();
   loadHistory();
 }
 
+// 统计
 function switchStatTab(tab, btn) {
   currentStatTab = tab;
   document.querySelectorAll('.stat-tab').forEach(b => b.classList.remove('active'));
@@ -571,6 +591,7 @@ async function loadStats() {
   });
 }
 
+// 导出 CSV
 async function exportCSV() {
   const { data } = await sb.from('records').select('*').eq('is_running', false).order('date').order('start_time');
   if (!data?.length) { showToast('暂无数据'); return; }
@@ -582,6 +603,7 @@ async function exportCSV() {
   a.download = `时间记录_${toDateStr(new Date())}.csv`; a.click();
 }
 
+// 导出 JSON
 async function exportJSON() {
   const { data } = await sb.from('records').select('*').eq('is_running', false).order('date');
   if (!data?.length) { showToast('暂无数据'); return; }
@@ -590,11 +612,13 @@ async function exportJSON() {
   a.download = `时间记录_${toDateStr(new Date())}.json`; a.click();
 }
 
+// 分类管理
 function renderCatManage() {
   document.getElementById('catManageList').innerHTML = categories.map(c => `
     <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
       <span style="font-size:20px;">${c.icon}</span>
-      <span style="flex:1;font-size:14px;font-weight:600;">${c.name}</span><div style="width:20px;height:20px;border-radius:50%;background:${c.color};"></div>
+      <span style="flex:1;font-size:14px;font-weight:600;">${c.name}</span>
+      <div style="width:20px;height:20px;border-radius:50%;background:${c.color};"></div>
       <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
     </div>`).join('');
 }
