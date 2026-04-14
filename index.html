@@ -258,13 +258,37 @@ let editingId = null;
 let barChartInstance = null;
 
 async function init() {
+  async function init() {
   const today = new Date();
   document.getElementById('headerDate').textContent = formatDateCN(today);
   document.getElementById('fDate').value = toDateStr(today);
   document.getElementById('historyDate').value = toDateStr(today);
   document.getElementById('historyDate').addEventListener('change', loadHistory);
-  await loadCategories();
+
+  // 测试 Supabase 连接
+  showToast('正在连接数据库...');
+  try {
+    const { data, error } = await sb.from('categories').select('*').order('created_at');
+    if (error) {
+      alert('❌ 数据库错误：' + error.message);
+      return;
+    }
+    categories = data || [];
+    if (categories.length === 0) {
+      alert('⚠️ 连接成功，但分类表为空！\n请先去Supabase 建表并添加数据');
+      return;
+    }
+    renderCatsGrid();
+    renderCatSelect('fCat');
+    renderCatSelect('eCat');
+    showToast('✅ 连接成功');
+  } catch(e) {
+    alert('❌ 连接失败：' + e.message);return;
+  }
+
   checkRunning();
+  loadHistory();
+}
   loadHistory();
 }
 
