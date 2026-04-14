@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>时间记录器</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -12,28 +14,37 @@
     --danger: #ef4444; --radius: 16px; --shadow: 0 2px 12px rgba(0,0,0,0.08);
   }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding-bottom: 80px; }
+
   .header { background: var(--card); padding: 16px 20px 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 var(--border); }
   .header h1 { font-size: 20px; font-weight: 700; }
   .header .date { font-size: 13px; color: var(--sub); margin-top: 2px; }
+
   .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
   .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 0; font-size: 10px; color: var(--sub); cursor: pointer; border: none; background: none; gap: 3px; transition: color 0.2s; }
   .nav-btn.active { color: var(--primary); }
   .nav-btn svg { width: 22px; height: 22px; }
+
   .page { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
   .page.active { display: block; }
+
   .card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
   .card-title { font-size: 13px; font-weight: 600; color: var(--sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .running-card { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+
+  .running-card { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow:0 4px 20px rgba(99,102,241,0.3); }
   .running-label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
   .running-cat { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
   .running-time { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 2px; }
   .running-start { font-size: 12px; opacity: 0.7; margin-top: 4px; }
-  .stop-btn { margin-top: 16px; background: rgba(255,255,255,0.25); border: none; color: white; padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; }
+  .stop-btn { margin-top: 16px; background: rgba(255,255,255,0.25); border: none; color: white; padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; backdrop-filter: blur(4px); }
+  .stop-btn:active { background: rgba(255,255,255,0.35); }
+
   .cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .cat-btn { display: flex; flex-direction: column; align-items: center; padding: 14px 8px; border-radius: 14px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; background: var(--bg); }
   .cat-btn:active { transform: scale(0.95); }
+  .cat-btn.selected { border-color: currentColor; background: white; }
   .cat-icon { font-size: 24px; margin-bottom: 4px; }
   .cat-name { font-size: 12px; font-weight: 600; }
+
   .form-group { margin-bottom: 14px; }
   .form-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; display: block; }
   .form-input { width: 100%; padding: 12px14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s; }
@@ -41,6 +52,7 @@
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .btn-primary { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
   .btn-primary:active { opacity: 0.85; }
+
   .record-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
   .record-item:last-child { border-bottom: none; }
   .record-dot { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
@@ -51,8 +63,11 @@
   .record-dur { font-size: 13px; font-weight: 600; color: var(--primary); flex-shrink: 0; }
   .record-actions { display: flex; gap: 6px; }
   .btn-icon { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 8px; font-size: 16px; }
+  .btn-icon:active { background: var(--bg); }
+
   .date-group { margin-bottom: 4px; }
   .date-header { font-size: 12px; font-weight: 700; color: var(--sub); padding: 8px 04px; text-transform: uppercase; }
+
   .stat-tabs { display: flex; background: var(--bg); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
   .stat-tab { flex: 1; text-align: center; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--sub); border: none; background: none; transition: all 0.2s; }
   .stat-tab.active { background: var(--card); color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
@@ -66,20 +81,26 @@
   .cat-stat-bar-wrap { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
   .cat-stat-bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
   .cat-stat-time { font-size: 12px; font-weight: 600; color: var(--sub); min-width: 50px; text-align: right; }
+
   .export-btn { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--card); border-radius: 14px; border: none; width: 100%; cursor: pointer; margin-bottom: 10px; box-shadow: var(--shadow); }
   .export-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
   .export-info { text-align: left; }
   .export-name { font-size: 15px; font-weight: 600; }
   .export-desc { font-size: 12px; color: var(--sub); margin-top: 2px; }
+
   .widget-tip { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 1px solid #bae6fd; }
   .widget-tip h3 { font-size: 14px; font-weight: 700; color: #0369a1; margin-bottom: 6px; }
   .widget-tip p { font-size: 12px; color: #0284c7; line-height: 1.6; }
+
   .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #1e293b; color: white; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 500; z-index: 999; transition: transform 0.3s; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
+
   .empty { text-align: center; padding: 40px 20px; color: var(--sub); }
   .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .empty p { font-size: 14px; }
+
   .loading { text-align: center; padding: 30px; color: var(--sub); font-size: 14px; }
+
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .modal-overlay.show { opacity: 1; pointer-events: all; }
   .modal { background: var(--card); border-radius: 24px 24px 0 0; padding: 20px; width: 100%; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s; }
@@ -87,26 +108,14 @@
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .modal-title { font-size: 18px; font-weight: 700; }
   .modal-close { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-  select.form-input { appearance: none; }
 
-  /* 加载遮罩 */
-  #loadingMask { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 16px; }
-  #loadingMask .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  #loadingMask p { font-size: 14px; color: var(--sub); }
-  #loadingMask .err { color: var(--danger); font-size: 13px; display: none; text-align: center; padding: 0 30px; line-height: 1.6; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  select.form-input { appearance: none; }
 </style>
 </head>
 <body>
 
-<!-- 加载遮罩 -->
-<div id="loadingMask">
-  <div class="spinner"></div>
-  <p>正在加载...</p><div class="err" id="loadErr">❌ 加载失败，请检查网络后刷新页面<br><small id="errDetail"></small></div>
-</div>
-
 <div class="header">
-  <h1>⏱ 时间记录器</h1>
+  <h1>⏱时间记录器</h1>
   <div class="date" id="headerDate"></div>
 </div>
 
@@ -165,13 +174,14 @@
   <div class="stat-summary">
     <div class="stat-card"><div class="stat-val" id="statTotal">0h</div><div class="stat-lbl">总时长</div></div>
     <div class="stat-card"><div class="stat-val" id="statCount">0</div><div class="stat-lbl">记录条数</div></div></div>
-  <div class="chart-wrap"><canvas id="barChart"></canvas></div><div class="card">
+  <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+  <div class="card">
     <div class="card-title">分类占比</div>
     <div id="catStats"></div>
   </div>
 </div>
 
-<!-- 导出 -->
+<!-- 更多 -->
 <div class="page" id="page-export">
   <div class="widget-tip">
     <h3>📱 小组件使用说明</h3>
@@ -181,7 +191,7 @@
     <div class="card-title">导出数据</div>
     <button class="export-btn" onclick="exportCSV()">
       <div class="export-icon" style="background:#dcfce7;">📊</div>
-      <div class="export-info"><div class="export-name">导出 CSV</div><div class="export-desc">可用Excel / Numbers 打开</div></div>
+      <div class="export-info"><div class="export-name">导出 CSV</div><div class="export-desc">可用 Excel / Numbers 打开</div></div>
     </button>
     <button class="export-btn" onclick="exportJSON()">
       <div class="export-icon" style="background:#dbeafe;">📋</div>
@@ -249,66 +259,14 @@
       <label class="form-label">备注</label>
       <input type="text" class="form-input" id="eNote">
     </div>
-    <button class="btn-primary" onclick="saveEdit()">保存</button></div>
+    <button class="btn-primary" onclick="saveEdit()">保存</button>
+  </div>
 </div>
 
 <script>
-// ===== 动态加载脚本 =====
-function loadScript(url) {
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = url;
-    s.onload = resolve;
-    s.onerror = () => reject(new Error('加载失败: ' + url));
-    document.head.appendChild(s);
-  });
-}
-
-// CDN 备用列表
-const SUPABASE_CDNS = [
-  'https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/supabase/2.39.3/umd/supabase.min.js',
-  'https://cdn.staticfile.org/supabase/2.39.3/umd/supabase.min.js',
-  'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js'
-];
-const CHART_CDNS = [
-  'https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/Chart.js/4.4.1/chart.umd.min.js',
-  'https://cdn.staticfile.org/Chart.js/4.4.1/chart.umd.min.js',
-  'https://unpkg.com/chart.js@4/dist/chart.umd.min.js',
-  'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js'
-];
-
-async function loadWithFallback(urls) {
-  for (const url of urls) {
-    try {
-      await loadScript(url);
-      return url;
-    } catch(e) {
-      console.warn('CDN失败，尝试下一个:', url);
-    }
-  }
-  throw new Error('所有CDN均不可用');
-}
-
-async function bootstrap() {
-  try {
-    await loadWithFallback(SUPABASE_CDNS);
-    await loadWithFallback(CHART_CDNS);
-    document.getElementById('loadingMask').style.display = 'none';
-    init();
-  } catch(e) {
-    document.querySelector('#loadingMask .spinner').style.display = 'none';
-    document.querySelector('#loadingMask p').style.display = 'none';
-    document.getElementById('loadErr').style.display = 'block';
-    document.getElementById('errDetail').textContent = e.message;
-  }
-}
-
-bootstrap();
-
-// ===== 主逻辑 =====
 const SUPABASE_URL = 'https://buyrevhbxypsekpmctmj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_aDBUcvGvxxxyr1XS37JX3g_WnE3s6x-';
-let sb;
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1eXJldmhieHlwc2VrcG1jdG1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNTc3ODksImV4cCI6MjA5MTczMzc4OX0.HbsxUMJZ4wVK1aVFLRo0Zc3emG-sthZ_fJVJ1oRFSlk';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let categories = [];
 let runningRecord = null;
@@ -317,17 +275,16 @@ let currentStatTab = 'day';
 let editingId = null;
 let barChartInstance = null;
 
-function init() {
-  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+async function init() {
   const today = new Date();
   document.getElementById('headerDate').textContent = formatDateCN(today);
   document.getElementById('fDate').value = toDateStr(today);
   document.getElementById('historyDate').value = toDateStr(today);
   document.getElementById('historyDate').addEventListener('change', loadHistory);
-  loadCategories().then(() => {
-    checkRunning();
-    loadHistory();
-  });
+
+  await loadCategories();
+  checkRunning();
+  loadHistory();
 }
 
 function toDateStr(d) { return d.toISOString().split('T')[0]; }
@@ -347,6 +304,7 @@ function calcMins(start, end) {
   const [eh,em] = end.split(':').map(Number);
   return (eh*60+em) - (sh*60+sm);
 }
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -442,8 +400,7 @@ async function stopTimer() {
   const dur = calcMins(runningRecord.start_time, endTime);
   await sb.from('records').update({ end_time: endTime, duration_minutes: dur, is_running: false }).eq('id', runningRecord.id);
   showToast(`已记录 ${fmtDur(dur)}`);
-  runningRecord = null;
-  document.getElementById('runningCard').innerHTML = '';
+  runningRecord = null;document.getElementById('runningCard').innerHTML = '';
 }
 
 async function addRecord() {
@@ -552,6 +509,7 @@ async function loadStats() {
 
   const { data } = await sb.from('records').select('*').gte('date', start).lte('date', end).eq('is_running', false);
   const records = data || [];
+
   const total = records.reduce((s,r) => s + (r.duration_minutes||0), 0);
   document.getElementById('statTotal').textContent = fmtDur(total) || '0m';
   document.getElementById('statCount').textContent = records.length;
@@ -661,6 +619,8 @@ async function deleteCategory(id) {
   renderCatManage();
   showToast('已删除');
 }
+
+init();
 </script>
 </body>
 </html>
