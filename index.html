@@ -396,16 +396,22 @@ function renderRunning() {
   const wrap = document.getElementById('runningCard');
   if (!runningRecord) { wrap.innerHTML = ''; return; }
   const cat = categories.find(c => c.id === runningRecord.category_id) || {};
-  const start = new Date(`${runningRecord.date}T${runningRecord.start_time}`);
+
+  //✅ 用本地时间拼接，避免时区偏移
+  const [h, m] = runningRecord.start_time.split(':').map(Number);
+  const start = new Date();
+  start.setHours(h, m, 0, 0);
+
   const elapsed = Math.floor((Date.now() - start) / 1000);
-  const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
-  const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
-  const s = String(elapsed%60).padStart(2,'0');
+  const hh = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+  const mm = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+  const ss = String(elapsed % 60).padStart(2, '0');
+
   wrap.innerHTML = `
     <div class="running-card">
       <div class="running-label">正在计时</div>
       <div class="running-cat">${cat.icon||'⏱'} ${runningRecord.category_name}</div>
-      <div class="running-time">${h}:${m}:${s}</div>
+      <div class="running-time">${hh}:${mm}:${ss}</div>
       <div class="running-start">开始于 ${fmtTime(runningRecord.start_time)}</div>
       <button class="stop-btn" onclick="quickStart('${runningRecord.category_id}')">⏹ 停止计时</button>
     </div>`;
