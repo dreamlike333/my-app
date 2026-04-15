@@ -5,225 +5,282 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>时间记录器</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>* { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #f0f4ff;
-    --card: #ffffff;
-    --text: #1e293b;
-    --sub: #64748b;
-    --border: #e2e8f0;
-    --primary: #6366f1;
-    --radius: 16px;
-    --shadow: 0 2px 12px rgba(99,102,241,0.08);
-  }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    min-height: 100vh;
-    padding-bottom: 80px;
-  }
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f0f4ff;
+  --card: #ffffff;
+  --text: #1e293b;
+  --sub: #64748b;
+  --border: #e2e8f0;
+  --primary: #6366f1;
+  --radius: 16px;
+  --shadow: 0 2px 16px rgba(99,102,241,0.10);
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+.header {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  padding: 20px 20px 16px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+}
+.header h1 { font-size: 20px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
+.header .date { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; }
 
-  /*顶部 */
-  .header {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    padding: 20px 20px 16px;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .header h1 { font-size: 20px; font-weight: 700; color: white; }
-  .header .date { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid var(--border);
+  display: flex; z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 08px; font-size: 11px; color: #94a3b8;
+  cursor: pointer; border: none; background: none; gap: 4px;
+  transition: color 0.2s;
+}
+.nav-btn.active { color: var(--primary); }
+.nav-btn .nav-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-btn.active .nav-dot {
+  width: 4px; height: 4px; background: var(--primary);border-radius: 50%; margin-top: 2px;
+}
 
-  /* 底部导航 */
-  .nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    display: flex; z-index: 100;padding-bottom: env(safe-area-inset-bottom);
-    box-shadow: 0 -4px 20px rgba(99,102,241,0.08);
-  }
-  .nav-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    padding: 10px 0; font-size: 10px; color: var(--sub);
-    cursor: pointer; border: none; background: none; gap: 3px; transition: color 0.2s;}
-  .nav-btn.active { color: var(--primary); }
-  .nav-btn svg { width: 22px; height: 22px; }
-  .nav-icon { font-size: 20px; line-height: 1; }
+.page { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
+.page.active { display: block; }
 
-  /* 页面 */
-  .page { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
-  .page.active { display: block; }
+.card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 12px; font-weight: 700; color: var(--sub);
+  margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px;
+}
 
-  /* 卡片 */
-  .card {
-    background: var(--card); border-radius: var(--radius);
-    padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow);
-  }
-  .card-title {
-    font-size: 13px; font-weight: 600; color: var(--sub);
-    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
+/* 计时卡片 */
+.running-card {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; border-radius: var(--radius); padding: 24px 20px;
+  margin-bottom: 12px; box-shadow: 0 8px 30px rgba(99,102,241,0.4);
+  position: relative; overflow: hidden;
+}
+.running-card::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.08);
+  border-radius:50%;
+}
+.running-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.2); border-radius: 20px;
+  padding: 4px 10px; font-size: 12px; margin-bottom: 12px;
+}
+.running-dot {
+  width: 6px; height: 6px; background: #4ade80;
+  border-radius: 50%; animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+.running-cat { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.running-time {
+  font-size: 52px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 3px; line-height: 1;
+  margin-bottom: 8px;
+}
+.running-start { font-size: 12px; opacity: 0.75; }
+.stop-btn {
+  margin-top: 18px;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  color: white; padding: 13px;
+  border-radius: 14px; font-size: 15px; font-weight: 600;
+  width: 100%; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.stop-btn:active { background: rgba(255,255,255,0.35); transform: scale(0.98); }
 
-  /* 正在计时 */
-  .running-card {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white; border-radius: var(--radius); padding: 20px;
-    margin-bottom: 12px; box-shadow: 0 4px 20px rgba(99,102,241,0.35);
-  }
-  .running-label { font-size: 12px; opacity: 0.8; margin-bottom: 4px; }
-  .running-cat { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-  .running-time {
-    font-size: 48px; font-weight: 700;
-    font-variant-numeric: tabular-nums; letter-spacing: 2px;
-  }
-  .running-start { font-size: 12px; opacity: 0.7; margin-top: 4px; }
-  .stop-btn {
-    margin-top: 16px; background: rgba(255,255,255,0.22);
-    border: 1.5px solid rgba(255,255,255,0.4);
-    color: white; padding: 12px 24px; border-radius: 12px;
-    font-size: 15px; font-weight: 600; width: 100%; cursor: pointer;
-  }
-  .stop-btn:active { background: rgba(255,255,255,0.35); }
+/* 分类网格 */
+.cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.cat-btn {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 8px 12px; border-radius: 16px;
+  border: none; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  background: var(--bg);
+}
+.cat-btn:active { transform: scale(0.92); }
+.cat-icon { font-size: 28px; margin-bottom: 6px; }
+.cat-name { font-size: 12px; font-weight: 600; }
 
-  /* 分类网格 */
-  .cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .cat-btn {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 16px 8px; border-radius: 16px;
-    border: 2px solid transparent; cursor: pointer;
-    transition: all 0.2s; background: var(--bg);
-  }
-  .cat-btn:active { transform: scale(0.93); }
-  .cat-icon { font-size: 26px; margin-bottom: 6px; }
-  .cat-name { font-size: 12px; font-weight: 600; }
+/* 表单 */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: 12px;
+  font-size: 15px; background: var(--bg); color: var(--text);
+  outline: none; transition: border-color 0.2s;-webkit-appearance: none;
+}
+.form-input:focus { border-color: var(--primary); background: white; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; border: none; border-radius: 14px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:active { opacity: 0.88; transform: scale(0.98); }
 
-  /* 表单 */
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; display: block; }
-  .form-input {
-    width: 100%; padding: 12px 14px;
-    border: 1.5px solid var(--border); border-radius: 12px;
-    font-size: 15px; background: var(--bg); color: var(--text);
-    outline: none; transition: border-color 0.2s;
-  }
-  .form-input:focus { border-color: var(--primary); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-primary {
-    width: 100%; padding: 14px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
-  }
-  .btn-primary:active { opacity: 0.85; }
+/* 历史 */
+.record-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.record-item:last-child { border-bottom: none; }
+.record-dot {
+  width: 44px; height: 44px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.record-info { flex: 1; min-width: 0; }
+.record-cat { font-size: 14px; font-weight: 600; }
+.record-time { font-size: 12px; color: var(--sub); margin-top: 2px; }
+.record-note { font-size: 12px; color: var(--sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.record-dur { font-size: 13px; font-weight: 700; color: var(--primary); flex-shrink: 0; }
+.record-actions { display: flex; gap: 4px; }
+.btn-icon {
+  background: var(--bg); border: none; cursor: pointer;
+  padding: 6px; border-radius: 10px; font-size: 15px;
+  transition: background 0.15s;
+}
+.btn-icon:active { background: var(--border); }
 
-  /* 历史记录 */
-  .record-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 0; border-bottom: 1px solid var(--border);}
-  .record-item:last-child { border-bottom: none; }
-  .record-dot {
-    width: 42px; height: 42px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; flex-shrink: 0;}
-  .record-info { flex: 1; min-width: 0; }
-  .record-cat { font-size: 14px; font-weight: 600; }
-  .record-time { font-size: 12px; color: var(--sub); margin-top: 2px; }
-  .record-note { font-size: 12px; color: var(--sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .record-dur { font-size: 13px; font-weight: 700; color: var(--primary); flex-shrink: 0; }
-  .record-actions { display: flex; gap: 6px; }
-  .btn-icon { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 8px; font-size: 16px; }
+/* 统计 */
+.stat-tabs {
+  display: flex; background: white; border-radius: 14px;
+  padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow);
+}
+.stat-tab {
+  flex: 1; text-align: center; padding: 9px 4px; border-radius: 11px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  color: var(--sub); border: none; background: none; transition: all 0.2s;
+}
+.stat-tab.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white; box-shadow: 0 3px 10px rgba(99,102,241,0.35);
+}
+.stat-summary { display: grid; grid-template-columns:1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card { background: white; border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
+.stat-val { font-size: 26px; font-weight: 800; color: var(--primary); }
+.stat-lbl { font-size: 11px; color: var(--sub); margin-top: 3px; font-weight: 500; }
 
-  /* 统计 */
-  .stat-tabs {
-    display: flex; background: var(--card); border-radius: 12px;
-    padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow);
-  }
-  .stat-tab {
-    flex: 1; text-align: center; padding: 8px; border-radius: 10px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    color: var(--sub); border: none; background: none; transition: all 0.2s;
-  }
-  .stat-tab.active {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: white; box-shadow: 0 2px 8px rgba(99,102,241,0.3);
-  }
-  .stat-summary { display: grid; grid-template-columns:1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .stat-card { background: var(--card); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
-  .stat-val { font-size: 24px; font-weight: 700; color: var(--primary); }
-  .stat-lbl { font-size: 11px; color: var(--sub); margin-top: 2px; }
-  .chart-wrap {
-    background: var(--card); border-radius: var(--radius);
-    padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px;
-    position: relative; height: 220px;
-  }
-  .pie-wrap {
-    background: var(--card); border-radius: var(--radius);
-    padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px;
-    position: relative; height: 260px;
-  }
-  .pie-title {
-    font-size: 13px; font-weight: 600; color: var(--sub);
-    margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .cat-stat-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-  .cat-stat-item:last-child { border-bottom: none; }
-  .cat-stat-bar-wrap { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
-  .cat-stat-bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
-  .cat-stat-time { font-size: 12px; font-weight: 600; color: var(--sub); min-width: 50px; text-align: right; }
+.chart-wrap {
+  background: white; border-radius: var(--radius);
+  padding: 16px12px; box-shadow: var(--shadow);
+  margin-bottom: 12px; height: 220px; position: relative;
+}
+.chart-title {
+  font-size: 12px; font-weight: 700; color: var(--sub);
+  margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
+}
+.chart-inner { height: 180px; position: relative; }
 
-  /* 导出 */
-  .export-btn {
-    display: flex; align-items: center; gap: 12px; padding: 16px;
-    background: var(--card); border-radius: 14px; border: none;
-    width: 100%; cursor: pointer; margin-bottom: 10px; box-shadow: var(--shadow);
-  }
-  .export-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .export-info { text-align: left; }
-  .export-name { font-size: 15px; font-weight: 600; }
-  .export-desc { font-size: 12px; color: var(--sub); margin-top: 2px; }
+.pie-wrap {
+  background: white; border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+.pie-inner { height: 200px; position: relative; margin-bottom: 4px; }
 
-  /* Toast */
-  .toast {
-    position: fixed; top: 20px; left: 50%;
-    transform: translateX(-50%) translateY(-80px);
-    background: #1e293b; color: white; padding: 12px 20px;
-    border-radius: 12px; font-size: 14px; font-weight: 500;
-    z-index: 999; transition: transform 0.3s; white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
+.cat-stat-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.cat-stat-item:last-child { border-bottom: none; }
+.cat-stat-bar-wrap { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.cat-stat-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.cat-stat-time { font-size: 12px; font-weight: 700; color: var(--sub); min-width: 52px; text-align: right; }
 
-  .empty { text-align: center; padding: 40px 20px; color: var(--sub); }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; }
-  .empty p { font-size: 14px; }
-  .loading { text-align: center; padding: 30px; color: var(--sub); font-size: 14px; }
+/* 导出 */
+.export-btn {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: white; border-radius: 14px; border: none;
+  width: 100%; cursor: pointer; margin-bottom: 10px;
+  box-shadow: var(--shadow); transition: transform 0.15s;
+}
+.export-btn:active { transform: scale(0.98); }
+.export-icon {
+  width: 44px; height: 44px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.export-name { font-size: 15px; font-weight: 600; text-align: left; }
+.export-desc { font-size: 12px; color: var(--sub); margin-top: 2px; text-align: left; }
 
-  /* 模态框 */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-    z-index: 200; display: flex; align-items: flex-end;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-  }
-  .modal-overlay.show { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--card); border-radius: 24px 24px 0 0;
-    padding: 20px; width: 100%; max-height: 85vh; overflow-y: auto;
-    transform: translateY(100%); transition: transform 0.3s;
-  }
-  .modal-overlay.show .modal { transform: translateY(0); }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .modal-title { font-size: 18px; font-weight: 700; }
-  .modal-close {
-    background: var(--bg); border: none; width: 32px; height: 32px;
-    border-radius: 50%; cursor: pointer; font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  select.form-input { appearance: none; }
+/* Toast */
+.toast {
+  position: fixed; top: 24px; left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: #1e293b; color: white; padding: 12px 22px;
+  border-radius: 14px; font-size: 14px; font-weight: 500;
+  z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.empty { text-align: center; padding: 40px 20px; color: var(--sub); }
+.empty-icon { font-size: 44px; margin-bottom: 10px; }
+.empty p { font-size: 14px; }
+.loading { text-align: center; padding: 30px; color: var(--sub); font-size: 14px; }
+
+/* 模态框 */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+  z-index: 200; display: flex; align-items: flex-end;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: white; border-radius: 24px 24px 0 0;
+  padding: 24px20px; width: 100%; max-height: 88vh; overflow-y: auto;
+  transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+}
+.modal-overlay.show .modal { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 0 auto 20px;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modal-title { font-size: 18px; font-weight: 700; }
+.modal-close {
+  background: var(--bg); border: none; width: 32px; height: 32px;
+  border-radius: 50%; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; color: var(--sub);
+}
+select.form-input { appearance: none; -webkit-appearance: none; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>⏱ 时间记录器</h1>
+  <h1>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    时间记录器
+  </h1>
   <div class="date" id="headerDate"></div>
 </div>
 
@@ -233,11 +290,11 @@
 <div class="page active" id="page-home">
   <div id="runningCard"></div>
   <div class="card">
-    <div class="card-title">快速开始</div>
+    <div class="card-title">⚡ 快速开始</div>
     <div class="cats-grid" id="catsGrid"></div>
   </div>
   <div class="card">
-    <div class="card-title">手动添加</div>
+    <div class="card-title">✏️ 手动添加</div>
     <div class="form-group">
       <label class="form-label">日期</label>
       <input type="date" class="form-input" id="fDate">
@@ -257,8 +314,8 @@
       <select class="form-input" id="fCat"></select>
     </div>
     <div class="form-group">
-      <label class="form-label">备注</label>
-      <input type="text" class="form-input" id="fNote" placeholder="可选">
+      <label class="form-label">备注（可选）</label>
+      <input type="text" class="form-input" id="fNote" placeholder="备注内容">
     </div>
     <button class="btn-primary" onclick="addRecord()">添加记录</button>
   </div>
@@ -266,8 +323,8 @@
 
 <!-- 历史 -->
 <div class="page" id="page-history">
-  <div class="card" style="padding:12px 16px;">
-    <input type="date" class="form-input" id="historyDate"style="border:none;padding:4px 0;background:transparent;font-size:15px;font-weight:600;">
+  <div class="card" style="padding:14px 16px;">
+    <input type="date" class="form-input" id="historyDate"style="border:none;padding:4px 0;background:transparent;font-size:16px;font-weight:700;color:var(--text);">
   </div>
   <div id="historyList"></div>
 </div>
@@ -275,10 +332,10 @@
 <!-- 统计 -->
 <div class="page" id="page-stats">
   <div class="stat-tabs">
-    <button class="stat-tab active" onclick="switchStatTab('day',this)">日</button>
-    <button class="stat-tab" onclick="switchStatTab('week',this)">周</button>
-    <button class="stat-tab" onclick="switchStatTab('month',this)">月</button>
-    <button class="stat-tab" onclick="switchStatTab('year',this)">年</button>
+    <button class="stat-tab active" onclick="switchStatTab('day',this)">今日</button>
+    <button class="stat-tab" onclick="switchStatTab('week',this)">本周</button>
+    <button class="stat-tab" onclick="switchStatTab('month',this)">本月</button>
+    <button class="stat-tab" onclick="switchStatTab('year',this)">全年</button>
   </div>
   <div class="stat-summary">
     <div class="stat-card">
@@ -290,12 +347,16 @@
       <div class="stat-lbl">记录条数</div>
     </div>
   </div>
-  <div class="chart-wrap"><canvas id="barChart"></canvas></div><div class="pie-wrap">
-    <div class="pie-title">分类占比</div>
-    <canvas id="pieChart"></canvas>
+  <div class="chart-wrap">
+    <div class="chart-title">📊 时间分布</div>
+    <div class="chart-inner"><canvas id="barChart"></canvas></div>
+  </div>
+  <div class="pie-wrap">
+    <div class="chart-title">🥧 分类占比</div>
+    <div class="pie-inner"><canvas id="pieChart"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-title">分类详情</div>
+    <div class="card-title">📋 分类详情</div>
     <div id="catStats"></div>
   </div>
 </div>
@@ -303,50 +364,73 @@
 <!-- 更多 -->
 <div class="page" id="page-export">
   <div class="card">
-    <div class="card-title">导出数据</div>
+    <div class="card-title">📤 导出数据</div>
     <button class="export-btn" onclick="exportCSV()">
       <div class="export-icon" style="background:#dcfce7;">📊</div>
-      <div class="export-info">
+      <div>
         <div class="export-name">导出 CSV</div>
         <div class="export-desc">可用 Excel / Numbers打开</div>
       </div>
     </button><button class="export-btn" onclick="exportJSON()">
       <div class="export-icon" style="background:#dbeafe;">📋</div>
-      <div class="export-info">
+      <div>
         <div class="export-name">导出 JSON</div>
         <div class="export-desc">完整数据备份</div>
       </div>
     </button>
   </div>
   <div class="card">
-    <div class="card-title">管理分类</div>
+    <div class="card-title">🏷️ 管理分类</div>
     <div id="catManageList"></div>
-    <div style="display:flex;gap:8px;margin-top:12px;">
+    <div style="display:flex;gap:8px;margin-top:14px;">
       <input type="text" class="form-input" id="newCatName" placeholder="分类名称" style="flex:1;">
-      <input type="text" class="form-input" id="newCatIcon" placeholder="图标" style="width:60px;text-align:center;">
+      <input type="text" class="form-input" id="newCatIcon" placeholder="图标" style="width:58px;text-align:center;">
       <input type="color" id="newCatColor" value="#6366f1"
-        style="width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;padding:2px;">
+        style="width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;">
     </div>
-    <button class="btn-primary" style="margin-top:10px;" onclick="addCategory()">添加分类</button>
+    <button class="btn-primary" style="margin-top:12px;" onclick="addCategory()">+ 添加分类</button>
   </div>
 </div>
 
 <!-- 底部导航 -->
 <nav class="nav">
   <button class="nav-btn active" onclick="switchPage('home',this)">
-    <span class="nav-icon">🏠</span>
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 1215 22"/>
+      </svg>
+    </div>
     首页
   </button>
   <button class="nav-btn" onclick="switchPage('history',this)">
-    <span class="nav-icon">📋</span>
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    </div>
     历史
   </button>
   <button class="nav-btn" onclick="switchPage('stats',this)">
-    <span class="nav-icon">📊</span>
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+    </div>
     统计
   </button>
   <button class="nav-btn" onclick="switchPage('export',this)">
-    <span class="nav-icon">⚙️</span>
+    <div class="nav-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+      </svg>
+    </div>
     更多
   </button>
 </nav>
@@ -354,6 +438,7 @@
 <!-- 编辑模态框 -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title">编辑记录</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
@@ -380,7 +465,7 @@
       <label class="form-label">备注</label>
       <input type="text" class="form-input" id="eNote">
     </div>
-    <button class="btn-primary" onclick="saveEdit()">保存</button>
+    <button class="btn-primary" onclick="saveEdit()">保存修改</button>
   </div>
 </div>
 
@@ -392,6 +477,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let categories = [];
 let runningRecord = null;
 let timerInterval = null;
+let startTimestamp = null; // ✅ 用时间戳计时，彻底解决时区问题
 let currentStatTab = 'day';
 let editingId = null;
 let barChartInstance = null;
@@ -401,24 +487,29 @@ let pieChartInstance = null;
 function toDateStr(d) {
   const y = d.getFullYear();
   const m = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${dd}`;
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function nowTimeStr() {
+  const n = new Date();
+  return String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 function formatDateCN(d) {
   const days = ['周日','周一','周二','周三','周四','周五','周六'];
   return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${days[d.getDay()]}`;
 }
 function fmtDur(mins) {
-  if (mins === null || mins === undefined) return '-';
+  if (mins === null || mins === undefined || isNaN(mins)) return '-';
+  mins = Math.max(0, Math.round(mins));
   if (mins < 60) return `${mins}分钟`;
   const h = Math.floor(mins/60), m = mins%60;
-  return m ? `${h}h${m}m` : `${h}h`;
+  return m ? `${h}h ${m}m` : `${h}h`;
 }
-function fmtTime(t) { return t ? t.slice(0,5) : ''; }
+function fmtTime(t) { return t ? t.slice(0,5) : '--:--'; }
 function calcMins(start, end) {
   const [sh,sm] = start.split(':').map(Number);
   const [eh,em] = end.split(':').map(Number);
-  return (eh*60+em) - (sh*60+sm);
+  return (eh*60+em)-(sh*60+sm);
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -458,21 +549,22 @@ async function loadCategories() {
   renderCatSelect('fCat');
   renderCatSelect('eCat');
 }
-
 function renderCatsGrid() {
   const grid = document.getElementById('catsGrid');
+  if (!categories.length) {
+    grid.innerHTML = '<div style="color:var(--sub);font-size:13px;padding:10px;">暂无分类，请在「更多」中添加</div>';
+    return;
+  }
   grid.innerHTML = categories.map(c => `
-    <button class="cat-btn" style="color:${c.color};" onclick="quickStart('${c.id}')">
+    <button class="cat-btn" style="background:${c.color}18;" onclick="quickStart('${c.id}')">
       <span class="cat-icon">${c.icon}</span>
-      <span class="cat-name">${c.name}</span>
+      <span class="cat-name" style="color:${c.color};">${c.name}</span>
     </button>`).join('');
 }
-
 function renderCatSelect(id) {
   const sel = document.getElementById(id);
   if (!sel) return;
-  sel.innerHTML = categories.map(c =>
-    `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
+  sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
 }
 
 // ===== 计时器 =====
@@ -480,15 +572,22 @@ async function checkRunning() {
   const { data } = await sb.from('records').select('*').eq('is_running', true).maybeSingle();
   if (data) {
     runningRecord = data;
+    //✅ 根据 start_time 字符串 + 今天日期 还原时间戳
+    const [sh, sm] = data.start_time.slice(0,5).split(':').map(Number);
+    const now = new Date();
+    const startDate = new Date(data.date); // 用记录的日期，不是今天
+    startDate.setHours(sh, sm, 0, 0);
+    startTimestamp = startDate.getTime();
     startTimer();
   }
 }
 
 async function quickStart(catId) {
-  if (runningRecord) { showToast('请先停止当前计时'); return; }
+  if (runningRecord) { showToast('⚠️ 请先停止当前计时'); return; }
   const cat = categories.find(c => c.id === catId);
   const now = new Date();
-  const timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  startTimestamp = now.getTime(); // ✅ 记录精确时间戳
+  const timeStr = nowTimeStr();
   const { data, error } = await sb.from('records').insert({
     date: toDateStr(now),
     start_time: timeStr,
@@ -496,15 +595,15 @@ async function quickStart(catId) {
     category_name: cat.name,
     is_running: true
   }).select().single();
-  if (error) { showToast('启动失败'); return; }
+  if (error) { showToast('❌ 启动失败'); console.error(error); return; }
   runningRecord = data;
   startTimer();
-  showToast(`开始记录：${cat.icon} ${cat.name}`);
+  showToast(`▶️ 开始：${cat.icon} ${cat.name}`);
 }
 
 function startTimer() {
-  renderRunning();
   clearInterval(timerInterval);
+  renderRunning();
   timerInterval = setInterval(renderRunning, 1000);
 }
 
@@ -513,41 +612,42 @@ function renderRunning() {
   if (!runningRecord) { wrap.innerHTML = ''; return; }
   const cat = categories.find(c => c.id === runningRecord.category_id) || {};
 
-  //✅ 关键修复：用本地时间计算，不依赖时区转换
-  const [sh, sm] = runningRecord.start_time.slice(0,5).split(':').map(Number);
-  const now = new Date();
-  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sh, sm, 0);
-  //如果开始时间比现在大（跨天情况），往前推一天
-  if (startToday > now) startToday.setDate(startToday.getDate() - 1);
-  const elapsed = Math.floor((now - startToday) / 1000);
-
-  const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
-  const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
-  const s = String(elapsed%60).padStart(2,'0');
+  // ✅ 直接用时间戳差值，绝对准确
+  const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+  const h = String(Math.floor(elapsed / 3600)).padStart(2,'0');
+  const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
 
   wrap.innerHTML = `
     <div class="running-card">
-      <div class="running-label">🔴 正在计时</div>
+      <div class="running-badge">
+        <div class="running-dot"></div>
+        正在计时
+      </div>
       <div class="running-cat">${cat.icon||'⏱'} ${runningRecord.category_name}</div>
       <div class="running-time">${h}:${m}:${s}</div>
       <div class="running-start">开始于 ${fmtTime(runningRecord.start_time)}</div>
-      <button class="stop-btn" onclick="stopTimer()">⏹ 停止计时</button>
+      <button class="stop-btn" onclick="stopTimer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        停止计时
+      </button>
     </div>`;
 }
 
 async function stopTimer() {
   if (!runningRecord) return;
   clearInterval(timerInterval);
-  const now = new Date();
-  const endTime = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  const dur = calcMins(runningRecord.start_time.slice(0,5), endTime);
+  const endStr = nowTimeStr();
+  const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
+  const dur = Math.round(elapsed / 60);
   await sb.from('records').update({
-    end_time: endTime,
+    end_time: endStr,
     duration_minutes: Math.max(0, dur),
     is_running: false
   }).eq('id', runningRecord.id);
-  showToast(`✅ 已记录 ${fmtDur(Math.max(0,dur))}`);
-  runningRecord = null;document.getElementById('runningCard').innerHTML = '';
+  showToast(`✅ 已记录 ${fmtDur(dur)}`);
+  runningRecord = null;
+  startTimestamp = null;document.getElementById('runningCard').innerHTML = '';
 }
 
 // ===== 手动添加 =====
@@ -557,8 +657,8 @@ async function addRecord() {
   const end = document.getElementById('fEnd').value;
   const catId = document.getElementById('fCat').value;
   const note = document.getElementById('fNote').value;
-  if (!date || !start || !end || !catId) { showToast('请填写完整信息'); return; }
-  if (end <= start) { showToast('结束时间必须晚于开始时间'); return; }
+  if (!date||!start||!end||!catId) { showToast('⚠️ 请填写完整信息'); return; }
+  if (end <= start) { showToast('⚠️ 结束时间必须晚于开始时间'); return; }
   const cat = categories.find(c => c.id === catId);
   const dur = calcMins(start, end);
   const { error } = await sb.from('records').insert({
@@ -566,7 +666,7 @@ async function addRecord() {
     duration_minutes: dur, category_id: catId,
     category_name: cat.name, note, is_running: false
   });
-  if (error) { showToast('添加失败'); return; }
+  if (error) { showToast('❌ 添加失败'); return; }
   showToast('✅ 添加成功');
   document.getElementById('fStart').value = '';
   document.getElementById('fEnd').value = '';
@@ -580,18 +680,18 @@ async function loadHistory() {
   list.innerHTML = '<div class="loading">加载中...</div>';
   const { data } = await sb.from('records').select('*')
     .eq('date', date).eq('is_running', false).order('start_time');
-  if (!data || data.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>暂无记录</p></div>';
+  if (!data || !data.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>这天暂无记录</p></div>';
     return;
   }
   list.innerHTML = `<div class="card">${data.map(r => {
     const cat = categories.find(c => c.id === r.category_id) || {};
     return `<div class="record-item">
-      <div class="record-dot" style="background:${cat.color||'#6366f1'}22;">${cat.icon||'📌'}</div>
+      <div class="record-dot" style="background:${cat.color||'#6366f1'}20;">${cat.icon||'📌'}</div>
       <div class="record-info">
         <div class="record-cat">${r.category_name}</div>
-        <div class="record-time">${fmtTime(r.start_time)} - ${fmtTime(r.end_time)}</div>
-        ${r.note ? `<div class="record-note">${r.note}</div>` : ''}
+        <div class="record-time">${fmtTime(r.start_time)} → ${fmtTime(r.end_time)}</div>
+        ${r.note ? `<div class="record-note">💬 ${r.note}</div>` : ''}
       </div>
       <div class="record-dur">${fmtDur(r.duration_minutes)}</div>
       <div class="record-actions">
@@ -603,9 +703,9 @@ async function loadHistory() {
 }
 
 async function deleteRecord(id) {
-  if (!confirm('确认删除？')) return;
+  if (!confirm('确认删除这条记录？')) return;
   await sb.from('records').delete().eq('id', id);
-  showToast('已删除');
+  showToast('🗑️ 已删除');
   loadHistory();
 }
 
@@ -614,29 +714,27 @@ async function openEdit(id) {
   if (!data) return;
   editingId = id;
   document.getElementById('eDate').value = data.date;
-  document.getElementById('eStart').value = data.start_time?.slice(0,5) || '';
-  document.getElementById('eEnd').value = data.end_time?.slice(0,5) || '';
-  document.getElementById('eNote').value = data.note || '';
+  document.getElementById('eStart').value = data.start_time?.slice(0,5)||'';
+  document.getElementById('eEnd').value = data.end_time?.slice(0,5)||'';
+  document.getElementById('eNote').value = data.note||'';
   renderCatSelect('eCat');
   document.getElementById('eCat').value = data.category_id;
   document.getElementById('editModal').classList.add('show');
 }
-
 function closeModal() { document.getElementById('editModal').classList.remove('show'); }
-
 async function saveEdit() {
   const date = document.getElementById('eDate').value;
   const start = document.getElementById('eStart').value;
   const end = document.getElementById('eEnd').value;
   const catId = document.getElementById('eCat').value;
   const note = document.getElementById('eNote').value;
-  if (!date || !start || !end) { showToast('请填写完整'); return; }
+  if (!date||!start||!end) { showToast('⚠️ 请填写完整'); return; }
   const cat = categories.find(c => c.id === catId);
   const dur = calcMins(start, end);
   await sb.from('records').update({
     date, start_time: start, end_time: end,
-    duration_minutes: dur, category_id: catId,
-    category_name: cat.name, note
+    duration_minutes: Math.max(0,dur),
+    category_id: catId, category_name: cat.name, note
   }).eq('id', editingId);
   showToast('✅ 已保存');
   closeModal();
@@ -674,39 +772,38 @@ async function loadStats() {
     .gte('date', start).lte('date', end).eq('is_running', false);
   const records = data || [];
 
-  const total = records.reduce((s,r) => s + (r.duration_minutes||0), 0);
-  document.getElementById('statTotal').textContent = fmtDur(total) || '0m';
+  const total = records.reduce((s,r) => s+(r.duration_minutes||0), 0);
+  document.getElementById('statTotal').textContent = total ? fmtDur(total) : '0m';
   document.getElementById('statCount').textContent = records.length;
 
-  // 分类统计
+  // 分类汇总
   const catMap = {};
   records.forEach(r => {
-    const cat = categories.find(c => c.id === r.category_id) ||
-      { name: r.category_name, color: '#6366f1', icon: '📌' };
-    if (!catMap[r.category_id]) catMap[r.category_id] = { cat, mins: 0 };
-    catMap[r.category_id].mins += r.duration_minutes || 0;
+    const cat = categories.find(c => c.id === r.category_id)|| { name: r.category_name||'未知', color: '#6366f1', icon: '📌' };
+    const key = r.category_id || r.category_name;
+    if (!catMap[key]) catMap[key] = { cat, mins: 0 };
+    catMap[key].mins += r.duration_minutes||0;
   });
   const catArr = Object.values(catMap).sort((a,b) => b.mins - a.mins);
   const maxMins = catArr[0]?.mins || 1;
 
-  // 分类详情列表
+  // 分类详情
   document.getElementById('catStats').innerHTML = catArr.length
     ? catArr.map(({cat,mins}) => `
       <div class="cat-stat-item">
-        <span style="font-size:18px;">${cat.icon}</span>
-        <span style="font-size:13px;font-weight:600;min-width:44px;">${cat.name}</span>
+        <span style="font-size:20px;width:28px;text-align:center;">${cat.icon}</span>
+        <span style="font-size:13px;font-weight:600;min-width:48px;color:${cat.color};">${cat.name}</span>
         <div class="cat-stat-bar-wrap">
           <div class="cat-stat-bar" style="width:${(mins/maxMins*100).toFixed(1)}%;background:${cat.color};"></div>
-        </div>
-        <span class="cat-stat-time">${fmtDur(mins)}</span>
+        </div><span class="cat-stat-time">${fmtDur(mins)}</span>
       </div>`).join('')
     : '<div class="empty"><p>暂无数据</p></div>';
 
   // ===== 饼状图 =====
-  if (pieChartInstance) pieChartInstance.destroy();
-  const pieCtx = document.getElementById('pieChart').getContext('2d');
-  if (catArr.length) {
-    pieChartInstance = new Chart(pieCtx, {
+  if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; }
+  const pieCanvas = document.getElementById('pieChart');
+  if (catArr.length && total > 0) {
+    pieChartInstance = new Chart(pieCanvas, {
       type: 'doughnut',
       data: {
         labels: catArr.map(({cat}) => `${cat.icon} ${cat.name}`),
@@ -715,28 +812,42 @@ async function loadStats() {
           backgroundColor: catArr.map(({cat}) => cat.color),
           borderWidth: 3,
           borderColor: '#ffffff',
-          hoverOffset: 8
+          hoverOffset: 10
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '60%',
+        cutout: '62%',
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: { font: { size: 11 }, padding: 12, boxWidth: 12, boxHeight: 12 }
+            position: 'bottom',labels: {
+              font: { size: 11, weight: '600' },
+              padding: 14,
+              boxWidth: 10,
+              boxHeight: 10,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
           },
           tooltip: {
             callbacks: {
-              label: ctx => ` ${fmtDur(ctx.raw)}(${(ctx.raw/total*100).toFixed(1)}%)`
+              label: ctx => {
+                const pct = total > 0 ? (ctx.raw/total*100).toFixed(1) : 0;
+                return `  ${fmtDur(ctx.raw)}（${pct}%）`;
+              }
             }
           }
         }
       }
     });
   } else {
-    pieCtx.clearRect(0,0,300,300);
+    const ctx2 = pieCanvas.getContext('2d');
+    ctx2.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
+    ctx2.fillStyle = '#94a3b8';
+    ctx2.font = '14px sans-serif';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('暂无数据', pieCanvas.width/2, pieCanvas.height/2);
   }
 
   // ===== 柱状图 =====
@@ -744,72 +855,81 @@ async function loadStats() {
   if (currentStatTab === 'day') {
     const hourMap = {};
     records.forEach(r => {
-      const h = parseInt(r.start_time);
+      const h = parseInt(r.start_time.slice(0,2));
       hourMap[h] = (hourMap[h]||0) + (r.duration_minutes||0);
     });
-    for (let i=6; i<=23; i++) {
-      chartLabels.push(`${i}时`);
+    for (let i = 6; i <= 23; i++) {
+      chartLabels.push(`${i}`);
       chartData.push(hourMap[i]||0);
+      chartColors.push(i === new Date().getHours() ? '#6366f1' : '#c7d2fe');
     }
-    chartColors = chartLabels.map(() => '#818cf8');
   } else if (currentStatTab === 'week') {
-    const dayNames = ['周一','周二','周三','周四','周五','周六','周日'];
+    const dayNames = ['一','二','三','四','五','六','日'];
     const dayMap = {};
     records.forEach(r => {
-      const d = new Date(r.date);
+      const d = new Date(r.date+'T12:00:00');
       const k = (d.getDay()+6)%7;
-      dayMap[k] = (dayMap[k]||0) + (r.duration_minutes||0);
+      dayMap[k] = (dayMap[k]||0)+(r.duration_minutes||0);
     });
-    for (let i=0; i<7; i++) {
-      chartLabels.push(dayNames[i]);
-      chartData.push(Math.round((dayMap[i]||0)/60*10)/10);
+    for (let i = 0; i < 7; i++) {
+      chartLabels.push(`周${dayNames[i]}`);
+      chartData.push(+(((dayMap[i]||0)/60).toFixed(1)));
+      chartColors.push(i===((now.getDay()+6)%7) ? '#6366f1' : '#c7d2fe');
     }
-    chartColors = chartLabels.map((_,i) => i===((now.getDay()+6)%7) ? '#6366f1' : '#a5b4fc');
   } else if (currentStatTab === 'month') {
     const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
     const dayMap = {};
     records.forEach(r => {
       const d = parseInt(r.date.split('-')[2]);
-      dayMap[d] = (dayMap[d]||0) + (r.duration_minutes||0);
+      dayMap[d] = (dayMap[d]||0)+(r.duration_minutes||0);
     });
-    for (let i=1; i<=daysInMonth; i++) {
+    for (let i = 1; i <= daysInMonth; i++) {
       chartLabels.push(`${i}`);
-      chartData.push(Math.round((dayMap[i]||0)/60*10)/10);
+      chartData.push(+(((dayMap[i]||0)/60).toFixed(1)));
+      chartColors.push(i===now.getDate() ? '#6366f1' : '#c7d2fe');
     }
-    chartColors = chartLabels.map((_,i) => (i+1)===now.getDate() ? '#6366f1' : '#a5b4fc');
   } else {
-    const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const mNames = ['1','2','3','4','5','6','7','8','9','10','11','12'];
     const mMap = {};
     records.forEach(r => {
       const m = parseInt(r.date.split('-')[1])-1;
-      mMap[m] = (mMap[m]||0) + (r.duration_minutes||0);
+      mMap[m] = (mMap[m]||0)+(r.duration_minutes||0);
     });
-    for (let i=0; i<12; i++) {
-      chartLabels.push(monthNames[i]);
-      chartData.push(Math.round((mMap[i]||0)/60*10)/10);
+    for (let i = 0; i < 12; i++) {
+      chartLabels.push(`${mNames[i]}月`);
+      chartData.push(+(((mMap[i]||0)/60).toFixed(1)));
+      chartColors.push(i===now.getMonth() ? '#6366f1' : '#c7d2fe');
     }
-    chartColors = chartLabels.map((_,i) => i===now.getMonth() ? '#6366f1' : '#a5b4fc');
   }
 
-  if (barChartInstance) barChartInstance.destroy();
-  const ctx = document.getElementById('barChart').getContext('2d');
-  barChartInstance = new Chart(ctx, {
+  if (barChartInstance) { barChartInstance.destroy(); barChartInstance = null; }
+  const barCanvas = document.getElementById('barChart');
+  barChartInstance = new Chart(barCanvas, {
     type: 'bar',
     data: {
       labels: chartLabels,
       datasets: [{
         data: chartData,
         backgroundColor: chartColors,
-        borderRadius: 6,
-        borderSkipped: false
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 32
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 0 } },
-        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } }, beginAtZero: true }
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 }, maxRotation: 0, color: '#94a3b8' }
+        },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: { font: { size: 10 }, color: '#94a3b8' },
+          beginAtZero: true
+        }
       }
     }
   });
@@ -820,24 +940,19 @@ async function exportCSV() {
   const { data } = await sb.from('records').select('*')
     .eq('is_running', false).order('date').order('start_time');
   if (!data?.length) { showToast('暂无数据'); return; }
-  const rows = [['日期','开始时间','结束时间','时长(分钟)','分类','备注']];
-  data.forEach(r => rows.push([
-    r.date, fmtTime(r.start_time), fmtTime(r.end_time),
-    r.duration_minutes||'', r.category_name||'', r.note||''
-  ]));
+  const rows = [['日期','开始','结束','时长(分钟)','分类','备注']];
+  data.forEach(r => rows.push([r.date, fmtTime(r.start_time), fmtTime(r.end_time), r.duration_minutes||0, r.category_name||'', r.note||'']));
   const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-  const blob = new Blob(['\ufeff'+csv], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `时间记录_${toDateStr(new Date())}.csv`;
   a.click();
 }
-
 async function exportJSON() {
-  const { data } = await sb.from('records').select('*')
-    .eq('is_running', false).order('date');
+  const { data } = await sb.from('records').select('*').eq('is_running', false).order('date');
   if (!data?.length) { showToast('暂无数据'); return; }
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `时间记录_${toDateStr(new Date())}.json`;
@@ -846,33 +961,35 @@ async function exportJSON() {
 
 // ===== 分类管理 =====
 function renderCatManage() {
-  document.getElementById('catManageList').innerHTML = categories.map(c => `
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
-      <span style="font-size:20px;">${c.icon}</span>
-      <span style="flex:1;font-size:14px;font-weight:600;">${c.name}</span><div style="width:20px;height:20px;border-radius:50%;background:${c.color};"></div>
-      <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
-    </div>`).join('');
+  document.getElementById('catManageList').innerHTML = categories.length
+    ? categories.map(c => `
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:10px;background:${c.color}20;display:flex;align-items:center;justify-content:center;font-size:18px;">${c.icon}</div>
+        <span style="flex:1;font-size:14px;font-weight:600;">${c.name}</span>
+        <div style="width:16px;height:16px;border-radius:50%;background:${c.color};"></div>
+        <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
+      </div>`).join('')
+    : '<div style="color:var(--sub);font-size:13px;padding:10px 0;">暂无分类</div>';
 }
-
 async function addCategory() {
   const name = document.getElementById('newCatName').value.trim();
   const icon = document.getElementById('newCatIcon').value.trim() || '📌';
   const color = document.getElementById('newCatColor').value;
-  if (!name) { showToast('请输入分类名称'); return; }
-  await sb.from('categories').insert({ name, icon, color });
+  if (!name) { showToast('⚠️ 请输入分类名称'); return; }
+  const { error } = await sb.from('categories').insert({ name, icon, color });
+  if (error) { showToast('❌ 添加失败'); return; }
   document.getElementById('newCatName').value = '';
   document.getElementById('newCatIcon').value = '';
   showToast('✅ 分类已添加');
   await loadCategories();
   renderCatManage();
 }
-
 async function deleteCategory(id) {
-  if (!confirm('删除分类？相关记录不受影响')) return;
+  if (!confirm('删除此分类？相关记录不受影响')) return;
   await sb.from('categories').delete().eq('id', id);
   await loadCategories();
   renderCatManage();
-  showToast('已删除');
+  showToast('🗑️ 已删除');
 }
 
 init();
