@@ -9,43 +9,18 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #f0f4ff;
-  --card: #ffffff;
-  --text: #1e293b;
-  --sub: #64748b;
-  --border: #e2e8f0;
-  --primary: #6366f1;
-  --radius: 16px;
+  --bg: #f0f4ff; --card: #ffffff; --text: #1e293b; --sub: #64748b;
+  --border: #e2e8f0; --primary: #6366f1; --radius: 16px;
   --shadow: 0 2px 16px rgba(99,102,241,0.10);
 }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  min-height: 100vh;
-  padding-bottom: 90px;
-}
-.header {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  padding: 20px 20px 16px;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 4px 20px rgba(99,102,241,0.3);
-}
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding-bottom: 90px; }
+
+.header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 20px 20px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
 .header h1 { font-size: 20px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
 .header .date { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; }
 
-.nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: white; border-top: 1px solid var(--border);
-  display: flex; z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-}
-.nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  padding: 10px 08px; font-size: 11px; color: #94a3b8;
-  cursor: pointer; border: none; background: none; gap: 4px; transition: color 0.2s;
-}
+.nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -4px 20px rgba(0,0,0,0.06); }
+.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 8px; font-size: 11px; color: #94a3b8; cursor: pointer; border: none; background: none; gap: 4px; transition: color 0.2s; }
 .nav-btn.active { color: var(--primary); }
 .nav-btn .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
 
@@ -55,66 +30,31 @@ body {
 .card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
 .card-title { font-size: 12px; font-weight: 700; color: var(--sub); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
 
-/* 计时卡片 */
-.running-card {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white; border-radius: var(--radius); padding: 24px 20px;
-  margin-bottom: 12px; box-shadow: 0 8px 30px rgba(99,102,241,0.4);
-  position: relative; overflow: hidden;
-}
-.running-card::before {
-  content: ''; position: absolute; top: -40px; right: -40px;
-  width: 120px; height: 120px; background: rgba(255,255,255,0.08); border-radius: 50%;
-}
-.running-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,0.2); border-radius: 20px;
-  padding: 4px 10px; font-size: 12px; margin-bottom: 12px;
-}
+.running-card { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border-radius: var(--radius); padding: 24px 20px; margin-bottom: 12px; box-shadow: 0 8px 30px rgba(99,102,241,0.4); position: relative; overflow: hidden; }
+.running-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+.running-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 10px; font-size: 12px; margin-bottom: 12px; }
 .running-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 1.2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)} }
 .running-cat { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
 .running-time { font-size: 52px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 3px; line-height: 1; margin-bottom: 8px; }
 .running-start { font-size: 12px; opacity: 0.75; }
-.stop-btn {
-  margin-top: 18px; background: rgba(255,255,255,0.2);
-  border: 1.5px solid rgba(255,255,255,0.5); color: white;
-  padding: 13px; border-radius: 14px; font-size: 15px; font-weight: 600;
-  width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
+.stop-btn { margin-top: 18px; background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.5); color: white; padding: 13px; border-radius: 14px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .stop-btn:active { background: rgba(255,255,255,0.35); }
 
-/* 分类网格 */
 .cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.cat-btn {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 16px 8px 12px; border-radius: 16px; border: none;
-  cursor: pointer; transition: transform 0.15s; background: var(--bg);
-}
+.cat-btn { display: flex; flex-direction: column; align-items: center; padding: 16px 8px 12px; border-radius: 16px; border: none; cursor: pointer; transition: transform 0.15s; background: var(--bg); }
 .cat-btn:active { transform: scale(0.92); }
 .cat-icon { font-size: 28px; margin-bottom: 6px; }
 .cat-name { font-size: 12px; font-weight: 600; }
 
-/* 表单 */
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; display: block; }
-.form-input {
-  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
-  border-radius: 12px; font-size: 15px; background: var(--bg);
-  color: var(--text); outline: none; transition: border-color 0.2s; -webkit-appearance: none;
-}
+.form-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
 .form-input:focus { border-color: var(--primary); background: white; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.btn-primary {
-  width: 100%; padding: 14px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white; border: none; border-radius: 14px;
-  font-size: 15px; font-weight: 600; cursor: pointer;
-  box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: opacity 0.2s, transform 0.15s;
-}
+.btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: opacity 0.2s, transform 0.15s; }
 .btn-primary:active { opacity: 0.88; transform: scale(0.98); }
 
-/* 历史 */
 .record-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .record-item:last-child { border-bottom: none; }
 .record-dot { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
@@ -127,7 +67,6 @@ body {
 .btn-icon { background: var(--bg); border: none; cursor: pointer; padding: 6px; border-radius: 10px; font-size: 15px; transition: background 0.15s; }
 .btn-icon:active { background: var(--border); }
 
-/* 统计 */
 .stat-tabs { display: flex; background: white; border-radius: 14px; padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow); }
 .stat-tab { flex: 1; text-align: center; padding: 9px 4px; border-radius: 11px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--sub); border: none; background: none; transition: all 0.2s; }
 .stat-tab.active { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; box-shadow: 0 3px 10px rgba(99,102,241,0.35); }
@@ -139,48 +78,35 @@ body {
 .chart-wrap { background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
 .chart-title { font-size: 12px; font-weight: 700; color: var(--sub); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .chart-inner { height: 180px; position: relative; }
-
 .pie-wrap { background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
 .pie-inner { height: 200px; position: relative; margin-bottom: 4px; }
 
-/* 分类详情可折叠 */
 .cat-stat-item { border-bottom: 1px solid var(--border); }
 .cat-stat-item:last-child { border-bottom: none; }
-.cat-stat-header { display: flex; align-items: center; gap: 10px; padding: 12px 0; cursor: pointer; }
-.cat-stat-header:active { opacity: 0.7; }
+.cat-stat-header { display: flex; align-items: center; gap: 10px; padding: 12px 0; cursor: pointer; user-select: none; }
 .cat-stat-bar-wrap { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
 .cat-stat-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
 .cat-stat-time { font-size: 12px; font-weight: 700; color: var(--sub); min-width: 52px; text-align: right; }
-.cat-stat-arrow { font-size: 12px; color: var(--sub); transition: transform 0.2s; flex-shrink: 0; }
+.cat-stat-arrow { font-size: 11px; color: var(--sub); transition: transform 0.25s; flex-shrink: 0; margin-left: 2px; }
 .cat-stat-arrow.open { transform: rotate(90deg); }
 
-/* 备注子统计 */
 .note-stats { display: none; background: var(--bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
 .note-stats.open { display: block; }
-.note-chart-wrap { height: 160px; position: relative; margin-bottom: 8px; }
+.note-chart-wrap { height: 150px; position: relative; margin-bottom: 10px; }
 .note-stat-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
 .note-stat-item:last-child { border-bottom: none; }
 .note-stat-label { font-size: 12px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.note-stat-bar-wrap { width: 80px; height: 5px; background: white; border-radius: 3px; overflow: hidden; }
+.note-stat-bar-wrap { width: 70px; height: 5px; background: white; border-radius: 3px; overflow: hidden; }
 .note-stat-bar { height: 100%; border-radius: 3px; }
 .note-stat-time { font-size: 11px; font-weight: 700; color: var(--sub); min-width: 44px; text-align: right; }
 
-/* 导出 */
 .export-btn { display: flex; align-items: center; gap: 14px; padding: 16px; background: white; border-radius: 14px; border: none; width: 100%; cursor: pointer; margin-bottom: 10px; box-shadow: var(--shadow); transition: transform 0.15s; }
 .export-btn:active { transform: scale(0.98); }
-.export-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.export-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
 .export-name { font-size: 15px; font-weight: 600; text-align: left; }
 .export-desc { font-size: 12px; color: var(--sub); margin-top: 2px; text-align: left; }
 
-/* Toast */
-.toast {
-  position: fixed; top: 24px; left: 50%;
-  transform: translateX(-50%) translateY(-100px);
-  background: #1e293b; color: white; padding: 12px 22px;
-  border-radius: 14px; font-size: 14px; font-weight: 500;
-  z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-  white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
+.toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1e293b; color: white; padding: 12px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
 .empty { text-align: center; padding: 40px 20px; color: var(--sub); }
@@ -188,25 +114,21 @@ body {
 .empty p { font-size: 14px; }
 .loading { text-align: center; padding: 30px; color: var(--sub); font-size: 14px; }
 
-/* 模态框 */
 .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 200; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(2px); }
 .modal-overlay.show { opacity: 1; pointer-events: all; }
 .modal { background: white; border-radius: 24px 24px 0 0; padding: 24px 20px; width: 100%; max-height: 88vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1); }
 .modal-overlay.show .modal { transform: translateY(0); }
-.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto20px; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-title { font-size: 18px; font-weight: 700; }
 .modal-close { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--sub); }
 select.form-input { appearance: none; -webkit-appearance: none; }
 
-/* 分类管理项 */
 .cat-manage-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .cat-manage-item:last-child { border-bottom: none; }
 .cat-manage-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .cat-manage-name { flex: 1; font-size: 14px; font-weight: 600; }
-.cat-manage-actions { display: flex; gap: 4px; }
 
-/* 自动填充提示 */
 .fill-tip { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: #166534; display: flex; align-items: center; gap: 8px; }
 </style>
 </head>
@@ -214,7 +136,8 @@ select.form-input { appearance: none; -webkit-appearance: none; }
 
 <div class="header">
   <h1>
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     时间记录器
   </h1>
   <div class="date" id="headerDate"></div>
@@ -310,8 +233,8 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <div style="display:flex;gap:8px;margin-top:14px;">
       <input type="text" class="form-input" id="newCatName" placeholder="分类名称" style="flex:1;">
       <input type="text" class="form-input" id="newCatIcon" placeholder="图标" style="width:58px;text-align:center;">
-      <input type="color" id="newCatColor" value="#6366f1" style="width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;"></div>
-    <button class="btn-primary" style="margin-top:12px;" onclick="addCategory()">+ 添加分类</button>
+      <input type="color" id="newCatColor" value="#6366f1" style="width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;padding:3px;">
+    </div><button class="btn-primary" style="margin-top:12px;" onclick="addCategory()">+ 添加分类</button>
   </div>
 </div>
 
@@ -319,23 +242,42 @@ select.form-input { appearance: none; -webkit-appearance: none; }
 <nav class="nav">
   <button class="nav-btn active" onclick="switchPage('home',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </div>首页
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 1215 22"/>
+      </svg>
+    </div>
+    首页
   </button>
   <button class="nav-btn" onclick="switchPage('history',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    </div>历史
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    </div>
+    历史
   </button>
   <button class="nav-btn" onclick="switchPage('stats',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    </div>统计
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+    </div>
+    统计
   </button>
   <button class="nav-btn" onclick="switchPage('export',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 01014.14M4.93 4.93a10 10 0 000 14.14"/></svg>
-    </div>更多
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+      </svg>
+    </div>
+    更多
   </button>
 </nav>
 
@@ -372,8 +314,8 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <div class="form-group">
       <label class="form-label">颜色</label>
       <div style="display:flex;align-items:center;gap:12px;">
-        <input type="color" id="editCatColor" style="width:48px;height:48px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;">
-        <span style="font-size:13px;color:var(--sub);">点击选择颜色</span>
+        <input type="color" id="editCatColor" style="width:48px;height:48px;border:none;border-radius:12px;cursor:pointer;padding:3px;">
+        <span style="font-size:13px;color:var(--sub);">点击色块选择颜色</span>
       </div>
     </div>
     <button class="btn-primary" onclick="saveEditCat()">保存修改</button>
@@ -397,28 +339,29 @@ const noteChartInstances = {};
 
 // ===== 工具函数 =====
 function toDateStr(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return d.getFullYear() + '-' +String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
 }
 function nowTimeStr() {
   const n = new Date();
-  return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  return String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
 }
 function formatDateCN(d) {
   const days = ['周日','周一','周二','周三','周四','周五','周六'];
-  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${days[d.getDay()]}`;
+  return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'+days[d.getDay()];
 }
 function fmtDur(mins) {
   if (mins === null || mins === undefined || isNaN(mins)) return '-';
   mins = Math.max(0, Math.round(mins));
-  if (mins < 60) return `${mins}分钟`;
+  if (mins < 60) return mins + '分钟';
   const h = Math.floor(mins/60), m = mins%60;
-  return m ? `${h}h ${m}m` : `${h}h`;
+  return m ? h+'h '+m+'m' : h+'h';
 }
 function fmtTime(t) { return t ? t.slice(0,5) : '--:--'; }
 function calcMins(start, end) {
   const [sh,sm] = start.split(':').map(Number);
   const [eh,em] = end.split(':').map(Number);
-  return (eh*60+em)-(sh*60+sm);
+  return (eh*60+em) - (sh*60+sm);
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -426,7 +369,9 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
 
 // ===== 初始化 =====
 async function init() {
@@ -464,16 +409,16 @@ function renderCatsGrid() {
     grid.innerHTML = '<div style="color:var(--sub);font-size:13px;padding:10px;">暂无分类，请在「更多」中添加</div>';
     return;
   }
-  grid.innerHTML = categories.map(c => `
-    <button class="cat-btn" style="background:${c.color}18;" onclick="quickStart('${c.id}')">
-      <span class="cat-icon">${c.icon}</span>
-      <span class="cat-name" style="color:${c.color};">${c.name}</span>
-    </button>`).join('');
+  grid.innerHTML = categories.map(c =>
+    '<button class="cat-btn" style="background:'+c.color+'18;" onclick="quickStart(\''+c.id+'\')">' +'<span class="cat-icon">'+c.icon+'</span>' +
+    '<span class="cat-name" style="color:'+c.color+';">'+c.name+'</span>' +
+    '</button>'
+  ).join('');
 }
 function renderCatSelect(id) {
   const sel = document.getElementById(id);
   if (!sel) return;
-  sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join('');
+  sel.innerHTML = categories.map(c => '<option value="'+c.id+'">'+c.icon+' '+c.name+'</option>').join('');
 }
 
 // ===== 计时器 =====
@@ -481,9 +426,9 @@ async function checkRunning() {
   const { data } = await sb.from('records').select('*').eq('is_running', true).maybeSingle();
   if (data) {
     runningRecord = data;
-    const [sh, sm] = data.start_time.slice(0,5).split(':').map(Number);
+    const parts = data.start_time.slice(0,5).split(':').map(Number);
     const startDate = new Date(data.date +'T00:00:00');
-    startDate.setHours(sh, sm, 0, 0);
+    startDate.setHours(parts[0], parts[1], 0, 0);
     startTimestamp = startDate.getTime();
     startTimer();
   }
@@ -500,7 +445,7 @@ async function quickStart(catId) {
   if (error) { showToast('❌ 启动失败'); return; }
   runningRecord = data;
   startTimer();
-  showToast(`▶️ 开始：${cat.icon} ${cat.name}`);
+  showToast('▶️ 开始：' + cat.icon + ' ' + cat.name);
 }
 function startTimer() {
   clearInterval(timerInterval);
@@ -515,17 +460,14 @@ function renderRunning() {
   const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
   const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
   const s = String(elapsed%60).padStart(2,'0');
-  wrap.innerHTML = `
-    <div class="running-card">
-      <div class="running-badge"><div class="running-dot"></div>正在计时</div>
-      <div class="running-cat">${cat.icon||'⏱'} ${runningRecord.category_name}</div>
-      <div class="running-time">${h}:${m}:${s}</div>
-      <div class="running-start">开始于${fmtTime(runningRecord.start_time)}</div>
-      <button class="stop-btn" onclick="stopTimer()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-        停止计时
-      </button>
-    </div>`;
+  wrap.innerHTML =
+    '<div class="running-card">' +
+    '<div class="running-badge"><div class="running-dot"></div>正在计时</div>' +
+    '<div class="running-cat">'+(cat.icon||'⏱')+' '+runningRecord.category_name+'</div>' +
+    '<div class="running-time">'+h+':'+m+':'+s+'</div>' +
+    '<div class="running-start">开始于 '+fmtTime(runningRecord.start_time)+'</div>' +
+    '<button class="stop-btn" onclick="stopTimer()">⏹ 停止计时</button>' +
+    '</div>';
 }
 async function stopTimer() {
   if (!runningRecord) return;
@@ -535,9 +477,8 @@ async function stopTimer() {
   await sb.from('records').update({
     end_time: nowTimeStr(), duration_minutes: Math.max(0, dur), is_running: false
   }).eq('id', runningRecord.id);
-  showToast(`✅ 已记录 ${fmtDur(dur)}`);
-  runningRecord = null; startTimestamp = null;
-  document.getElementById('runningCard').innerHTML = '';
+  showToast('✅ 已记录 ' + fmtDur(dur));
+  runningRecord = null; startTimestamp = null;document.getElementById('runningCard').innerHTML = '';
 }
 
 // ===== 手动添加 =====
@@ -574,38 +515,35 @@ async function loadHistory() {
     .eq('date', date).eq('is_running', false).order('start_time');
 
   //===== 功能1：自动填充"其他" =====
-  const selectedDate = new Date(date + 'T00:00:00');
-  const today = new Date(); today.setHours(0,0,0,0);
-  const isYesterday = selectedDate < today;
+  const selDate = new Date(date + 'T12:00:00');
+  const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+  const isPast = selDate < todayMidnight;
 
   let filledRecords = data ? [...data] : [];
-  let fillCount = 0;
 
-  if (isYesterday && data) {
+  if (isPast && data) {
     const gaps = findGaps(data, '00:00', '23:59');
-    if (gaps.length > 0) {
-      fillCount = gaps.length;
-      // 找到或创建"其他"分类
+    const realGaps = gaps.filter(g => calcMins(g.start, g.end) > 0);
+    if (realGaps.length > 0) {
       let otherCat = categories.find(c => c.name === '其他');
       if (!otherCat) {
-        const { data: newCat } = await sb.from('categories').insert({ name: '其他', icon: '⬜', color: '#94a3b8' }).select().single();
-        if (newCat) { categories.push(newCat); otherCat = newCat; }
+        const { data: nc } = await sb.from('categories')
+          .insert({ name: '其他', icon: '⬜', color: '#94a3b8' }).select().single();
+        if (nc) { categories.push(nc); otherCat = nc; renderCatsGrid(); renderCatSelect('fCat'); }
       }
       if (otherCat) {
-        for (const gap of gaps) {
-          const dur = calcMins(gap.start, gap.end);
-          if (dur > 0) {
-            await sb.from('records').insert({
-              date, start_time: gap.start, end_time: gap.end,
-              duration_minutes: dur, category_id: otherCat.id,
-              category_name: '其他', note: '自动填充', is_running: false
-            });
-          }
-        }// 重新加载
-        const { data: newData } = await sb.from('records').select('*')
+        for (const gap of realGaps) {
+          await sb.from('records').insert({
+            date, start_time: gap.start, end_time: gap.end,
+            duration_minutes: calcMins(gap.start, gap.end),
+            category_id: otherCat.id, category_name: '其他',
+            note: '自动填充', is_running: false
+          });
+        }
+        const { data: nd } = await sb.from('records').select('*')
           .eq('date', date).eq('is_running', false).order('start_time');
-        filledRecords = newData || [];
-        tipEl.innerHTML = `<div class="fill-tip">✅ 已自动用「其他」填充 ${fillCount} 段空白时间</div>`;
+        filledRecords = nd || [];
+        tipEl.innerHTML = '<div class="fill-tip">✅ 已自动用「其他」填充 '+realGaps.length+' 段空白时间</div>';
       }
     }
   }
@@ -614,34 +552,34 @@ async function loadHistory() {
     list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>这天暂无记录</p></div>';
     return;
   }
-  list.innerHTML = `<div class="card">${filledRecords.map(r => {
+
+  const rows = filledRecords.map(r => {
     const cat = categories.find(c => c.id === r.category_id) || {};
-    return `<div class="record-item">
-      <div class="record-dot" style="background:${cat.color||'#6366f1'}20;">${cat.icon||'📌'}</div>
-      <div class="record-info">
-        <div class="record-cat">${r.category_name}</div>
-        <div class="record-time">${fmtTime(r.start_time)} → ${fmtTime(r.end_time)}</div>
-        ${r.note ? `<div class="record-note">💬 ${r.note}</div>` : ''}
-      </div>
-      <div class="record-dur">${fmtDur(r.duration_minutes)}</div>
-      <div class="record-actions">
-        <button class="btn-icon" onclick="openEdit('${r.id}')">✏️</button>
-        <button class="btn-icon" onclick="deleteRecord('${r.id}')">🗑️</button>
-      </div>
-    </div>`;
-  }).join('')}</div>`;
+    const color = cat.color || '#6366f1';
+    return '<div class="record-item">' +
+      '<div class="record-dot" style="background:'+color+'20;">'+(cat.icon||'📌')+'</div>' +
+      '<div class="record-info">' +
+        '<div class="record-cat">'+r.category_name+'</div>' +
+        '<div class="record-time">'+fmtTime(r.start_time)+' → '+fmtTime(r.end_time)+'</div>' +
+        (r.note ? '<div class="record-note">💬 '+r.note+'</div>' : '') +'</div>' +
+      '<div class="record-dur">'+fmtDur(r.duration_minutes)+'</div>' +
+      '<div class="record-actions">' +
+        '<button class="btn-icon" onclick="openEdit(\''+r.id+'\')">✏️</button>' +
+        '<button class="btn-icon" onclick="deleteRecord(\''+r.id+'\')">🗑️</button>' +
+      '</div></div>';
+  }).join('');
+  list.innerHTML = '<div class="card">'+rows+'</div>';
 }
 
-//找出时间空隙
 function findGaps(records, dayStart, dayEnd) {
-  if (!records.length) return [{ start: dayStart, end: dayEnd }];
+  if (!records || !records.length) return [{ start: dayStart, end: dayEnd }];
   const sorted = [...records].sort((a,b) => a.start_time.localeCompare(b.start_time));
   const gaps = [];
   let cursor = dayStart;
   for (const r of sorted) {
     const rStart = r.start_time.slice(0,5);
-    if (rStart > cursor) gaps.push({ start: cursor, end: rStart });
     const rEnd = r.end_time ? r.end_time.slice(0,5) : rStart;
+    if (rStart > cursor) gaps.push({ start: cursor, end: rStart });
     if (rEnd > cursor) cursor = rEnd;
   }
   if (cursor < dayEnd) gaps.push({ start: cursor, end: dayEnd });
@@ -659,9 +597,9 @@ async function openEdit(id) {
   if (!data) return;
   editingId = id;
   document.getElementById('eDate').value = data.date;
-  document.getElementById('eStart').value = data.start_time?.slice(0,5)||'';
-  document.getElementById('eEnd').value = data.end_time?.slice(0,5)||'';
-  document.getElementById('eNote').value = data.note||'';
+  document.getElementById('eStart').value = data.start_time ? data.start_time.slice(0,5) : '';
+  document.getElementById('eEnd').value = data.end_time ? data.end_time.slice(0,5) : '';
+  document.getElementById('eNote').value = data.note || '';
   renderCatSelect('eCat');
   document.getElementById('eCat').value = data.category_id;
   document.getElementById('editModal').classList.add('show');
@@ -702,10 +640,10 @@ async function loadStats() {
     start = toDateStr(d);
     const e = new Date(d); e.setDate(e.getDate()+6); end = toDateStr(e);
   } else if (currentStatTab === 'month') {
-    start = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+    start = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01';
     end = toDateStr(new Date(now.getFullYear(), now.getMonth()+1, 0));
   } else {
-    start = `${now.getFullYear()}-01-01`; end = `${now.getFullYear()}-12-31`;
+    start = now.getFullYear()+'-01-01'; end = now.getFullYear()+'-12-31';
   }
 
   const { data } = await sb.from('records').select('*')
@@ -718,87 +656,91 @@ async function loadStats() {
   // 分类汇总
   const catMap = {};
   records.forEach(r => {
-    const cat = categories.find(c => c.id === r.category_id) || { name: r.category_name||'未知', color: '#6366f1', icon: '📌' };
+    const cat = categories.find(c => c.id === r.category_id) ||
+      { name: r.category_name||'未知', color: '#6366f1', icon: '📌' };
     const key = r.category_id || r.category_name;
     if (!catMap[key]) catMap[key] = { cat, mins: 0, notes: {} };
     catMap[key].mins += r.duration_minutes||0;
-    // 备注统计
-    const noteKey = r.note && r.note.trim() ? r.note.trim() : '（无备注）';
-    catMap[key].notes[noteKey] = (catMap[key].notes[noteKey]||0) + (r.duration_minutes||0);
+    const nk = (r.note && r.note.trim()) ? r.note.trim() : '（无备注）';
+    catMap[key].notes[nk] = (catMap[key].notes[nk]||0) + (r.duration_minutes||0);
   });
   const catArr = Object.values(catMap).sort((a,b) => b.mins - a.mins);
-  const maxMins = catArr[0]?.mins || 1;
-
-  //===== 功能2：分类详情 + 备注统计 =====
-  document.getElementById('catStats').innerHTML = catArr.length
-    ? catArr.map(({cat, mins, notes}, idx) => {
-        const noteArr = Object.entries(notes).sort((a,b) => b[1]-a[1]);
-        const hasNotes = noteArr.some(([k]) => k !== '（无备注）') || noteArr.length > 1;
-        return `
-        <div class="cat-stat-item">
-          <div class="cat-stat-header" onclick="toggleNoteStats('ns-${idx}','arr-${idx}')">
-            <span style="font-size:20px;width:28px;text-align:center;">${cat.icon}</span>
-            <span style="font-size:13px;font-weight:600;min-width:48px;color:${cat.color};">${cat.name}</span><div class="cat-stat-bar-wrap">
-              <div class="cat-stat-bar" style="width:${(mins/maxMins*100).toFixed(1)}%;background:${cat.color};"></div>
-            </div>
-            <span class="cat-stat-time">${fmtDur(mins)}</span><span class="cat-stat-arrow" id="arr-${idx}">▶</span>
-          </div>
-          <div class="note-stats" id="ns-${idx}">
-            <div class="note-chart-wrap"><canvas id="nc-${idx}"></canvas></div>
-            ${noteArr.map(([k,v]) => `
-              <div class="note-stat-item">
-                <span class="note-stat-label">${k}</span>
-                <div class="note-stat-bar-wrap">
-                  <div class="note-stat-bar" style="width:${(v/mins*100).toFixed(1)}%;background:${cat.color};"></div>
-                </div>
-                <span class="note-stat-time">${fmtDur(v)}</span></div>`).join('')}
-          </div>
-        </div>`;}).join('')
-    : '<div class="empty"><p>暂无数据</p></div>';
-
-  // 预存noteArr 数据供图表使用
+  const maxMins = catArr[0] ? catArr[0].mins : 1;
   window._catStatData = catArr;
+
+  // ===== 功能2：分类详情 + 备注统计 =====
+  if (catArr.length) {
+    let html = '';
+    catArr.forEach(function(item, idx) {
+      const cat = item.cat, mins = item.mins, notes = item.notes;
+      const noteArr = Object.entries(notes).sort((a,b) => b[1]-a[1]);
+      const pct = (mins/maxMins*100).toFixed(1);
+      html += '<div class="cat-stat-item">' +
+        '<div class="cat-stat-header" onclick="toggleNoteStats(\'ns-'+idx+'\',\'arr-'+idx+'\')">' +
+          '<span style="font-size:20px;width:28px;text-align:center;">'+cat.icon+'</span>' +
+          '<span style="font-size:13px;font-weight:600;min-width:48px;color:'+cat.color+';">'+cat.name+'</span>' +
+          '<div class="cat-stat-bar-wrap"><div class="cat-stat-bar" style="width:'+pct+'%;background:'+cat.color+';"></div></div>' +'<span class="cat-stat-time">'+fmtDur(mins)+'</span>' +
+          '<span class="cat-stat-arrow" id="arr-'+idx+'">▶</span>' +
+        '</div>' +
+        '<div class="note-stats" id="ns-'+idx+'">' +
+          '<div class="note-chart-wrap"><canvas id="nc-'+idx+'"></canvas></div>';
+      noteArr.forEach(function(entry) {
+        const k = entry[0], v = entry[1];
+        const bPct = (v/mins*100).toFixed(1);
+        html += '<div class="note-stat-item">' +
+          '<span class="note-stat-label">'+k+'</span>' +
+          '<div class="note-stat-bar-wrap"><div class="note-stat-bar" style="width:'+bPct+'%;background:'+cat.color+';"></div></div>' +
+          '<span class="note-stat-time">'+fmtDur(v)+'</span>' +
+          '</div>';
+      });
+      html += '</div></div>';
+    });
+    document.getElementById('catStats').innerHTML = html;
+  } else {
+    document.getElementById('catStats').innerHTML = '<div class="empty"><p>暂无数据</p></div>';
+  }
 
   // 饼状图
   if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; }
-  const pieCanvas = document.getElementById('pieChart');
   if (catArr.length && total > 0) {
-    pieChartInstance = new Chart(pieCanvas, {
+    pieChartInstance = new Chart(document.getElementById('pieChart'), {
       type: 'doughnut',
       data: {
-        labels: catArr.map(({cat}) => `${cat.icon} ${cat.name}`),
-        datasets: [{ data: catArr.map(({mins}) => mins), backgroundColor: catArr.map(({cat}) => cat.color), borderWidth: 3, borderColor: '#fff', hoverOffset: 10 }]
+        labels: catArr.map(function(x){ return x.cat.icon+' '+x.cat.name; }),
+        datasets: [{
+          data: catArr.map(function(x){ return x.mins; }),
+          backgroundColor: catArr.map(function(x){ return x.cat.color; }),
+          borderWidth: 3, borderColor: '#fff', hoverOffset: 10
+        }]
       },
       options: {
         responsive: true, maintainAspectRatio: false, cutout: '62%',
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 11, weight: '600' }, padding: 14, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle' } },
-          tooltip: { callbacks: { label: ctx => `  ${fmtDur(ctx.raw)}（${total>0?(ctx.raw/total*100).toFixed(1):0}%）` } }
+          tooltip: { callbacks: { label: function(ctx){ return ''+fmtDur(ctx.raw)+'（'+(total>0?(ctx.raw/total*100).toFixed(1):0)+'%）'; } } }
         }
       }
     });
   }
 
-  //柱状图
+  // 柱状图
   let chartLabels = [], chartData = [], chartColors = [];
   if (currentStatTab === 'day') {
-    const hourMap = {};
-    records.forEach(r => { const h = parseInt(r.start_time.slice(0,2)); hourMap[h] = (hourMap[h]||0)+(r.duration_minutes||0); });
-    for (let i=6;i<=23;i++) { chartLabels.push(`${i}`); chartData.push(hourMap[i]||0); chartColors.push(i===new Date().getHours()?'#6366f1':'#c7d2fe'); }
+    const hm = {};
+    records.forEach(r => { const h=parseInt(r.start_time.slice(0,2)); hm[h]=(hm[h]||0)+(r.duration_minutes||0); });
+    for (let i=6;i<=23;i++) { chartLabels.push(i+''); chartData.push(hm[i]||0); chartColors.push(i===now.getHours()?'#6366f1':'#c7d2fe'); }
   } else if (currentStatTab === 'week') {
-    const dayNames = ['一','二','三','四','五','六','日'];
-    const dayMap = {};
-    records.forEach(r => { const d=new Date(r.date+'T12:00:00'); const k=(d.getDay()+6)%7; dayMap[k]=(dayMap[k]||0)+(r.duration_minutes||0); });
-    for (let i=0;i<7;i++) { chartLabels.push(`周${dayNames[i]}`); chartData.push(+((dayMap[i]||0)/60).toFixed(1)); chartColors.push(i===((now.getDay()+6)%7)?'#6366f1':'#c7d2fe'); }
+    const dn=['一','二','三','四','五','六','日'], dm={};
+    records.forEach(r => { const d=new Date(r.date+'T12:00:00'); const k=(d.getDay()+6)%7; dm[k]=(dm[k]||0)+(r.duration_minutes||0); });
+    for (let i=0;i<7;i++) { chartLabels.push('周'+dn[i]); chartData.push(+((dm[i]||0)/60).toFixed(1)); chartColors.push(i===((now.getDay()+6)%7)?'#6366f1':'#c7d2fe'); }
   } else if (currentStatTab === 'month') {
-    const dim = new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-    const dayMap = {};
-    records.forEach(r => { const d=parseInt(r.date.split('-')[2]); dayMap[d]=(dayMap[d]||0)+(r.duration_minutes||0); });
-    for (let i=1;i<=dim;i++) { chartLabels.push(`${i}`); chartData.push(+((dayMap[i]||0)/60).toFixed(1)); chartColors.push(i===now.getDate()?'#6366f1':'#c7d2fe'); }
+    const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(), dm={};
+    records.forEach(r => { const d=parseInt(r.date.split('-')[2]); dm[d]=(dm[d]||0)+(r.duration_minutes||0); });
+    for (let i=1;i<=dim;i++) { chartLabels.push(i+''); chartData.push(+((dm[i]||0)/60).toFixed(1)); chartColors.push(i===now.getDate()?'#6366f1':'#c7d2fe'); }
   } else {
-    const mMap = {};
-    records.forEach(r => { const m=parseInt(r.date.split('-')[1])-1; mMap[m]=(mMap[m]||0)+(r.duration_minutes||0); });
-    for (let i=0;i<12;i++) { chartLabels.push(`${i+1}月`); chartData.push(+((mMap[i]||0)/60).toFixed(1)); chartColors.push(i===now.getMonth()?'#6366f1':'#c7d2fe'); }
+    const mm={};
+    records.forEach(r => { const m=parseInt(r.date.split('-')[1])-1; mm[m]=(mm[m]||0)+(r.duration_minutes||0); });
+    for (let i=0;i<12;i++) { chartLabels.push((i+1)+'月'); chartData.push(+((mm[i]||0)/60).toFixed(1)); chartColors.push(i===now.getMonth()?'#6366f1':'#c7d2fe'); }
   }
 
   if (barChartInstance) { barChartInstance.destroy(); barChartInstance = null; }
@@ -816,35 +758,36 @@ async function loadStats() {
   });
 }
 
-// 展开/收起备注统计
+//展开/收起备注统计
 function toggleNoteStats(nsId, arrId) {
   const ns = document.getElementById(nsId);
   const arr = document.getElementById(arrId);
+  if (!ns || !arr) return;
   const isOpen = ns.classList.contains('open');
   ns.classList.toggle('open');
   arr.classList.toggle('open');
-
   if (!isOpen) {
-    // 找到对应分类数据并渲染图表
     const idx = parseInt(nsId.split('-')[1]);
     const catData = window._catStatData[idx];
     if (!catData) return;
     const noteArr = Object.entries(catData.notes).sort((a,b) => b[1]-a[1]);
-    const canvasId = `nc-${idx}`;
-    if (noteChartInstances[canvasId]) { noteChartInstances[canvasId].destroy(); }
-    noteChartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+    const cid = 'nc-'+idx;
+    if (noteChartInstances[cid]) { noteChartInstances[cid].destroy(); delete noteChartInstances[cid]; }
+    const canvas = document.getElementById(cid);
+    if (!canvas) return;
+    noteChartInstances[cid] = new Chart(canvas, {
       type: 'bar',
       data: {
-        labels: noteArr.map(([k]) => k.length > 8 ? k.slice(0,8)+'…' : k),
+        labels: noteArr.map(function(e){ const k=e[0]; return k.length>8?k.slice(0,8)+'…':k; }),
         datasets: [{
-          data: noteArr.map(([,v]) => v),
+          data: noteArr.map(function(e){ return e[1]; }),
           backgroundColor: catData.cat.color,
           borderRadius: 6, borderSkipped: false, maxBarThickness: 36
         }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtDur(ctx.raw)}` } } },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx){ return ' '+fmtDur(ctx.raw); } } } },
         scales: {
           x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94a3b8' } },
           y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#94a3b8' }, beginAtZero: true }
@@ -857,36 +800,39 @@ function toggleNoteStats(nsId, arrId) {
 // ===== 导出 =====
 async function exportCSV() {
   const { data } = await sb.from('records').select('*').eq('is_running', false).order('date').order('start_time');
-  if (!data?.length) { showToast('暂无数据'); return; }
+  if (!data || !data.length) { showToast('暂无数据'); return; }
   const rows = [['日期','开始','结束','时长(分钟)','分类','备注']];
   data.forEach(r => rows.push([r.date, fmtTime(r.start_time), fmtTime(r.end_time), r.duration_minutes||0, r.category_name||'', r.note||'']));
-  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const csv = rows.map(r => r.map(v => '"'+v+'"').join(',')).join('\n');
   const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = `时间记录_${toDateStr(new Date())}.csv`; a.click();
+  a.download = '时间记录_'+toDateStr(new Date())+'.csv'; a.click();
 }
 async function exportJSON() {
   const { data } = await sb.from('records').select('*').eq('is_running', false).order('date');
-  if (!data?.length) { showToast('暂无数据'); return; }
+  if (!data || !data.length) { showToast('暂无数据'); return; }
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = `时间记录_${toDateStr(new Date())}.json`; a.click();
+  a.download = '时间记录_'+toDateStr(new Date())+'.json'; a.click();
 }
 
-//===== 分类管理 =====
+// ===== 分类管理 =====
 function renderCatManage() {
-  document.getElementById('catManageList').innerHTML = categories.length
-    ? categories.map(c => `
-      <div class="cat-manage-item">
-        <div class="cat-manage-icon" style="background:${c.color}20;">${c.icon}</div>
-        <span class="cat-manage-name">${c.name}</span>
-        <div style="width:16px;height:16px;border-radius:50%;background:${c.color};margin-right:4px;"></div>
-        <div class="cat-manage-actions">
-          <button class="btn-icon" onclick="openEditCat('${c.id}')">✏️</button>
-          <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
-        </div>
-      </div>`).join('')
-    : '<div style="color:var(--sub);font-size:13px;padding:10px 0;">暂无分类</div>';
+  if (!categories.length) {
+    document.getElementById('catManageList').innerHTML = '<div style="color:var(--sub);font-size:13px;padding:10px 0;">暂无分类</div>';
+    return;
+  }
+  let html = '';
+  categories.forEach(c => {
+    html += '<div class="cat-manage-item">' +
+      '<div class="cat-manage-icon" style="background:'+c.color+'20;">'+c.icon+'</div>' +
+      '<span class="cat-manage-name">'+c.name+'</span>' +
+      '<div style="width:16px;height:16px;border-radius:50%;background:'+c.color+';margin-right:4px;"></div>' +
+      '<button class="btn-icon" onclick="openEditCat(\''+c.id+'\')">✏️</button>' +
+      '<button class="btn-icon" onclick="deleteCategory(\''+c.id+'\')">🗑️</button>' +
+      '</div>';
+  });
+  document.getElementById('catManageList').innerHTML = html;
 }
 
 //===== 功能3：编辑分类 =====
@@ -907,14 +853,12 @@ async function saveEditCat() {
   if (!name) { showToast('⚠️ 请输入分类名称'); return; }
   const { error } = await sb.from('categories').update({ name, icon, color }).eq('id', id);
   if (error) { showToast('❌ 保存失败'); return; }
-  // 同步更新已有记录的分类名
   await sb.from('records').update({ category_name: name }).eq('category_id', id);
   showToast('✅ 分类已更新');
   closeModal('editCatModal');
   await loadCategories();
   renderCatManage();
 }
-
 async function addCategory() {
   const name = document.getElementById('newCatName').value.trim();
   const icon = document.getElementById('newCatIcon').value.trim() || '📌';
