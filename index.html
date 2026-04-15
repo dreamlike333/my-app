@@ -36,8 +36,7 @@ body {
 
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: white;
-  border-top: 1px solid var(--border);
+  background: white; border-top: 1px solid var(--border);
   display: flex; z-index: 100;
   padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
@@ -45,29 +44,16 @@ body {
 .nav-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   padding: 10px 08px; font-size: 11px; color: #94a3b8;
-  cursor: pointer; border: none; background: none; gap: 4px;
-  transition: color 0.2s;
+  cursor: pointer; border: none; background: none; gap: 4px; transition: color 0.2s;
 }
 .nav-btn.active { color: var(--primary); }
-.nav-btn .nav-icon {
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-}
-.nav-btn.active .nav-dot {
-  width: 4px; height: 4px; background: var(--primary);border-radius: 50%; margin-top: 2px;
-}
+.nav-btn .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
 
 .page { display: none; padding: 16px; max-width: 480px; margin: 0 auto; }
 .page.active { display: block; }
 
-.card {
-  background: var(--card); border-radius: var(--radius);
-  padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow);
-}
-.card-title {
-  font-size: 12px; font-weight: 700; color: var(--sub);
-  margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px;
-}
+.card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.card-title { font-size: 12px; font-weight: 700; color: var(--sub); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
 
 /* 计时卡片 */
 .running-card {
@@ -77,52 +63,33 @@ body {
   position: relative; overflow: hidden;
 }
 .running-card::before {
-  content: '';
-  position: absolute; top: -40px; right: -40px;
-  width: 120px; height: 120px;
-  background: rgba(255,255,255,0.08);
-  border-radius:50%;
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 120px; height: 120px; background: rgba(255,255,255,0.08); border-radius: 50%;
 }
 .running-badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(255,255,255,0.2); border-radius: 20px;
   padding: 4px 10px; font-size: 12px; margin-bottom: 12px;
 }
-.running-dot {
-  width: 6px; height: 6px; background: #4ade80;
-  border-radius: 50%; animation: pulse 1.2s infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.4); }
-}
+.running-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
 .running-cat { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-.running-time {
-  font-size: 52px; font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 3px; line-height: 1;
-  margin-bottom: 8px;
-}
+.running-time { font-size: 52px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 3px; line-height: 1; margin-bottom: 8px; }
 .running-start { font-size: 12px; opacity: 0.75; }
 .stop-btn {
-  margin-top: 18px;
-  background: rgba(255,255,255,0.2);
-  border: 1.5px solid rgba(255,255,255,0.5);
-  color: white; padding: 13px;
-  border-radius: 14px; font-size: 15px; font-weight: 600;
-  width: 100%; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 18px; background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.5); color: white;
+  padding: 13px; border-radius: 14px; font-size: 15px; font-weight: 600;
+  width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.stop-btn:active { background: rgba(255,255,255,0.35); transform: scale(0.98); }
+.stop-btn:active { background: rgba(255,255,255,0.35); }
 
 /* 分类网格 */
 .cats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .cat-btn {
   display: flex; flex-direction: column; align-items: center;
-  padding: 16px 8px 12px; border-radius: 16px;
-  border: none; cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  background: var(--bg);
+  padding: 16px 8px 12px; border-radius: 16px; border: none;
+  cursor: pointer; transition: transform 0.15s; background: var(--bg);
 }
 .cat-btn:active { transform: scale(0.92); }
 .cat-icon { font-size: 28px; margin-bottom: 6px; }
@@ -132,10 +99,9 @@ body {
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 6px; display: block; }
 .form-input {
-  width: 100%; padding: 12px 14px;
-  border: 1.5px solid var(--border); border-radius: 12px;
-  font-size: 15px; background: var(--bg); color: var(--text);
-  outline: none; transition: border-color 0.2s;-webkit-appearance: none;
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+  border-radius: 12px; font-size: 15px; background: var(--bg);
+  color: var(--text); outline: none; transition: border-color 0.2s; -webkit-appearance: none;
 }
 .form-input:focus { border-color: var(--primary); background: white; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -144,90 +110,65 @@ body {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white; border: none; border-radius: 14px;
   font-size: 15px; font-weight: 600; cursor: pointer;
-  box-shadow: 0 4px 14px rgba(99,102,241,0.35);
-  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.35); transition: opacity 0.2s, transform 0.15s;
 }
 .btn-primary:active { opacity: 0.88; transform: scale(0.98); }
 
 /* 历史 */
-.record-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
-}
+.record-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .record-item:last-child { border-bottom: none; }
-.record-dot {
-  width: 44px; height: 44px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; flex-shrink: 0;
-}
+.record-dot { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
 .record-info { flex: 1; min-width: 0; }
 .record-cat { font-size: 14px; font-weight: 600; }
 .record-time { font-size: 12px; color: var(--sub); margin-top: 2px; }
 .record-note { font-size: 12px; color: var(--sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .record-dur { font-size: 13px; font-weight: 700; color: var(--primary); flex-shrink: 0; }
 .record-actions { display: flex; gap: 4px; }
-.btn-icon {
-  background: var(--bg); border: none; cursor: pointer;
-  padding: 6px; border-radius: 10px; font-size: 15px;
-  transition: background 0.15s;
-}
+.btn-icon { background: var(--bg); border: none; cursor: pointer; padding: 6px; border-radius: 10px; font-size: 15px; transition: background 0.15s; }
 .btn-icon:active { background: var(--border); }
 
 /* 统计 */
-.stat-tabs {
-  display: flex; background: white; border-radius: 14px;
-  padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow);
-}
-.stat-tab {
-  flex: 1; text-align: center; padding: 9px 4px; border-radius: 11px;
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  color: var(--sub); border: none; background: none; transition: all 0.2s;
-}
-.stat-tab.active {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white; box-shadow: 0 3px 10px rgba(99,102,241,0.35);
-}
+.stat-tabs { display: flex; background: white; border-radius: 14px; padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.stat-tab { flex: 1; text-align: center; padding: 9px 4px; border-radius: 11px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--sub); border: none; background: none; transition: all 0.2s; }
+.stat-tab.active { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; box-shadow: 0 3px 10px rgba(99,102,241,0.35); }
 .stat-summary { display: grid; grid-template-columns:1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .stat-card { background: white; border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
 .stat-val { font-size: 26px; font-weight: 800; color: var(--primary); }
 .stat-lbl { font-size: 11px; color: var(--sub); margin-top: 3px; font-weight: 500; }
 
-.chart-wrap {
-  background: white; border-radius: var(--radius);
-  padding: 16px12px; box-shadow: var(--shadow);
-  margin-bottom: 12px; height: 220px; position: relative;
-}
-.chart-title {
-  font-size: 12px; font-weight: 700; color: var(--sub);
-  margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
-}
+.chart-wrap { background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
+.chart-title { font-size: 12px; font-weight: 700; color: var(--sub); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .chart-inner { height: 180px; position: relative; }
 
-.pie-wrap {
-  background: white; border-radius: var(--radius);
-  padding: 16px; box-shadow: var(--shadow);
-  margin-bottom: 12px;
-}
+.pie-wrap { background: white; border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 12px; }
 .pie-inner { height: 200px; position: relative; margin-bottom: 4px; }
 
-.cat-stat-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+/* 分类详情可折叠 */
+.cat-stat-item { border-bottom: 1px solid var(--border); }
 .cat-stat-item:last-child { border-bottom: none; }
+.cat-stat-header { display: flex; align-items: center; gap: 10px; padding: 12px 0; cursor: pointer; }
+.cat-stat-header:active { opacity: 0.7; }
 .cat-stat-bar-wrap { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
 .cat-stat-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
 .cat-stat-time { font-size: 12px; font-weight: 700; color: var(--sub); min-width: 52px; text-align: right; }
+.cat-stat-arrow { font-size: 12px; color: var(--sub); transition: transform 0.2s; flex-shrink: 0; }
+.cat-stat-arrow.open { transform: rotate(90deg); }
+
+/* 备注子统计 */
+.note-stats { display: none; background: var(--bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.note-stats.open { display: block; }
+.note-chart-wrap { height: 160px; position: relative; margin-bottom: 8px; }
+.note-stat-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.note-stat-item:last-child { border-bottom: none; }
+.note-stat-label { font-size: 12px; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note-stat-bar-wrap { width: 80px; height: 5px; background: white; border-radius: 3px; overflow: hidden; }
+.note-stat-bar { height: 100%; border-radius: 3px; }
+.note-stat-time { font-size: 11px; font-weight: 700; color: var(--sub); min-width: 44px; text-align: right; }
 
 /* 导出 */
-.export-btn {
-  display: flex; align-items: center; gap: 14px; padding: 16px;
-  background: white; border-radius: 14px; border: none;
-  width: 100%; cursor: pointer; margin-bottom: 10px;
-  box-shadow: var(--shadow); transition: transform 0.15s;
-}
+.export-btn { display: flex; align-items: center; gap: 14px; padding: 16px; background: white; border-radius: 14px; border: none; width: 100%; cursor: pointer; margin-bottom: 10px; box-shadow: var(--shadow); transition: transform 0.15s; }
 .export-btn:active { transform: scale(0.98); }
-.export-icon {
-  width: 44px; height: 44px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center; font-size: 22px;
-}
+.export-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 .export-name { font-size: 15px; font-weight: 600; text-align: left; }
 .export-desc { font-size: 12px; color: var(--sub); margin-top: 2px; text-align: left; }
 
@@ -237,7 +178,8 @@ body {
   transform: translateX(-50%) translateY(-100px);
   background: #1e293b; color: white; padding: 12px 22px;
   border-radius: 14px; font-size: 14px; font-weight: 500;
-  z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  z-index: 9999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -247,31 +189,25 @@ body {
 .loading { text-align: center; padding: 30px; color: var(--sub); font-size: 14px; }
 
 /* 模态框 */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(15,23,42,0.5);
-  z-index: 200; display: flex; align-items: flex-end;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s;
-  backdrop-filter: blur(2px);
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 200; display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(2px); }
 .modal-overlay.show { opacity: 1; pointer-events: all; }
-.modal {
-  background: white; border-radius: 24px 24px 0 0;
-  padding: 24px20px; width: 100%; max-height: 88vh; overflow-y: auto;
-  transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
-}
+.modal { background: white; border-radius: 24px 24px 0 0; padding: 24px 20px; width: 100%; max-height: 88vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1); }
 .modal-overlay.show .modal { transform: translateY(0); }
-.modal-handle {
-  width: 36px; height: 4px; background: var(--border);
-  border-radius: 2px; margin: 0 auto 20px;
-}
+.modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-title { font-size: 18px; font-weight: 700; }
-.modal-close {
-  background: var(--bg); border: none; width: 32px; height: 32px;
-  border-radius: 50%; cursor: pointer; font-size: 16px;
-  display: flex; align-items: center; justify-content: center; color: var(--sub);
-}
+.modal-close { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--sub); }
 select.form-input { appearance: none; -webkit-appearance: none; }
+
+/* 分类管理项 */
+.cat-manage-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.cat-manage-item:last-child { border-bottom: none; }
+.cat-manage-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.cat-manage-name { flex: 1; font-size: 14px; font-weight: 600; }
+.cat-manage-actions { display: flex; gap: 4px; }
+
+/* 自动填充提示 */
+.fill-tip { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: #166534; display: flex; align-items: center; gap: 8px; }
 </style>
 </head>
 <body>
@@ -324,8 +260,9 @@ select.form-input { appearance: none; -webkit-appearance: none; }
 <!-- 历史 -->
 <div class="page" id="page-history">
   <div class="card" style="padding:14px 16px;">
-    <input type="date" class="form-input" id="historyDate"style="border:none;padding:4px 0;background:transparent;font-size:16px;font-weight:700;color:var(--text);">
+    <input type="date" class="form-input" id="historyDate" style="border:none;padding:4px 0;background:transparent;font-size:16px;font-weight:700;color:var(--text);">
   </div>
+  <div id="fillTip"></div>
   <div id="historyList"></div>
 </div>
 
@@ -338,15 +275,8 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <button class="stat-tab" onclick="switchStatTab('year',this)">全年</button>
   </div>
   <div class="stat-summary">
-    <div class="stat-card">
-      <div class="stat-val" id="statTotal">0m</div>
-      <div class="stat-lbl">总时长</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="statCount">0</div>
-      <div class="stat-lbl">记录条数</div>
-    </div>
-  </div>
+    <div class="stat-card"><div class="stat-val" id="statTotal">0m</div><div class="stat-lbl">总时长</div></div>
+    <div class="stat-card"><div class="stat-val" id="statCount">0</div><div class="stat-lbl">记录条数</div></div></div>
   <div class="chart-wrap">
     <div class="chart-title">📊 时间分布</div>
     <div class="chart-inner"><canvas id="barChart"></canvas></div>
@@ -356,7 +286,7 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <div class="pie-inner"><canvas id="pieChart"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-title">📋 分类详情</div>
+    <div class="card-title">📋 分类详情（点击展开备注统计）</div>
     <div id="catStats"></div>
   </div>
 </div>
@@ -367,16 +297,11 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <div class="card-title">📤 导出数据</div>
     <button class="export-btn" onclick="exportCSV()">
       <div class="export-icon" style="background:#dcfce7;">📊</div>
-      <div>
-        <div class="export-name">导出 CSV</div>
-        <div class="export-desc">可用 Excel / Numbers打开</div>
-      </div>
-    </button><button class="export-btn" onclick="exportJSON()">
+      <div><div class="export-name">导出 CSV</div><div class="export-desc">可用Excel / Numbers打开</div></div>
+    </button>
+    <button class="export-btn" onclick="exportJSON()">
       <div class="export-icon" style="background:#dbeafe;">📋</div>
-      <div>
-        <div class="export-name">导出 JSON</div>
-        <div class="export-desc">完整数据备份</div>
-      </div>
+      <div><div class="export-name">导出 JSON</div><div class="export-desc">完整数据备份</div></div>
     </button>
   </div>
   <div class="card">
@@ -385,9 +310,7 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     <div style="display:flex;gap:8px;margin-top:14px;">
       <input type="text" class="form-input" id="newCatName" placeholder="分类名称" style="flex:1;">
       <input type="text" class="form-input" id="newCatIcon" placeholder="图标" style="width:58px;text-align:center;">
-      <input type="color" id="newCatColor" value="#6366f1"
-        style="width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;">
-    </div>
+      <input type="color" id="newCatColor" value="#6366f1" style="width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;"></div>
     <button class="btn-primary" style="margin-top:12px;" onclick="addCategory()">+ 添加分类</button>
   </div>
 </div>
@@ -396,76 +319,64 @@ select.form-input { appearance: none; -webkit-appearance: none; }
 <nav class="nav">
   <button class="nav-btn active" onclick="switchPage('home',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-        <polyline points="9 22 9 12 15 1215 22"/>
-      </svg>
-    </div>
-    首页
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>首页
   </button>
   <button class="nav-btn" onclick="switchPage('history',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-        <line x1="16" y1="2" x2="16" y2="6"/>
-        <line x1="8" y1="2" x2="8" y2="6"/>
-        <line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-    </div>
-    历史
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>历史
   </button>
   <button class="nav-btn" onclick="switchPage('stats',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10"/>
-        <line x1="12" y1="20" x2="12" y2="4"/>
-        <line x1="6" y1="20" x2="6" y2="14"/>
-      </svg>
-    </div>
-    统计
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>统计
   </button>
   <button class="nav-btn" onclick="switchPage('export',this)">
     <div class="nav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-      </svg>
-    </div>
-    更多
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 01014.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+    </div>更多
   </button>
 </nav>
 
-<!-- 编辑模态框 -->
+<!-- 编辑记录模态框 -->
 <div class="modal-overlay" id="editModal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title">编辑记录</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">日期</label>
-      <input type="date" class="form-input" id="eDate">
-    </div>
+    <div class="form-group"><label class="form-label">日期</label><input type="date" class="form-input" id="eDate"></div>
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">开始时间</label>
-        <input type="time" class="form-input" id="eStart">
-      </div>
-      <div class="form-group">
-        <label class="form-label">结束时间</label>
-        <input type="time" class="form-input" id="eEnd">
-      </div>
+      <div class="form-group"><label class="form-label">开始时间</label><input type="time" class="form-input" id="eStart"></div>
+      <div class="form-group"><label class="form-label">结束时间</label><input type="time" class="form-input" id="eEnd"></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">分类</label>
-      <select class="form-input" id="eCat"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">备注</label>
-      <input type="text" class="form-input" id="eNote">
-    </div>
+    <div class="form-group"><label class="form-label">分类</label><select class="form-input" id="eCat"></select></div>
+    <div class="form-group"><label class="form-label">备注</label><input type="text" class="form-input" id="eNote"></div>
     <button class="btn-primary" onclick="saveEdit()">保存修改</button>
+  </div>
+</div>
+
+<!-- 编辑分类模态框 -->
+<div class="modal-overlay" id="editCatModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">编辑分类</div>
+      <button class="modal-close" onclick="closeModal('editCatModal')">✕</button>
+    </div>
+    <input type="hidden" id="editCatId">
+    <div class="form-group"><label class="form-label">分类名称</label><input type="text" class="form-input" id="editCatName"></div>
+    <div class="form-group"><label class="form-label">图标（emoji）</label><input type="text" class="form-input" id="editCatIcon" style="font-size:24px;text-align:center;"></div>
+    <div class="form-group">
+      <label class="form-label">颜色</label>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <input type="color" id="editCatColor" style="width:48px;height:48px;border:none;border-radius:12px;cursor:pointer;padding:3px;background:none;">
+        <span style="font-size:13px;color:var(--sub);">点击选择颜色</span>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="saveEditCat()">保存修改</button>
   </div>
 </div>
 
@@ -477,22 +388,20 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let categories = [];
 let runningRecord = null;
 let timerInterval = null;
-let startTimestamp = null; // ✅ 用时间戳计时，彻底解决时区问题
+let startTimestamp = null;
 let currentStatTab = 'day';
 let editingId = null;
 let barChartInstance = null;
 let pieChartInstance = null;
+const noteChartInstances = {};
 
-//===== 工具函数 =====
+// ===== 工具函数 =====
 function toDateStr(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 function nowTimeStr() {
   const n = new Date();
-  return String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+  return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
 }
 function formatDateCN(d) {
   const days = ['周日','周一','周二','周三','周四','周五','周六'];
@@ -517,6 +426,7 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // ===== 初始化 =====
 async function init() {
@@ -535,8 +445,7 @@ function switchPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
-  if (name === 'history') loadHistory();
+  btn.classList.add('active');if (name === 'history') loadHistory();
   if (name === 'stats') loadStats();
   if (name === 'export') renderCatManage();
 }
@@ -572,82 +481,63 @@ async function checkRunning() {
   const { data } = await sb.from('records').select('*').eq('is_running', true).maybeSingle();
   if (data) {
     runningRecord = data;
-    //✅ 根据 start_time 字符串 + 今天日期 还原时间戳
     const [sh, sm] = data.start_time.slice(0,5).split(':').map(Number);
-    const now = new Date();
-    const startDate = new Date(data.date); // 用记录的日期，不是今天
+    const startDate = new Date(data.date +'T00:00:00');
     startDate.setHours(sh, sm, 0, 0);
     startTimestamp = startDate.getTime();
     startTimer();
   }
 }
-
 async function quickStart(catId) {
   if (runningRecord) { showToast('⚠️ 请先停止当前计时'); return; }
   const cat = categories.find(c => c.id === catId);
   const now = new Date();
-  startTimestamp = now.getTime(); // ✅ 记录精确时间戳
-  const timeStr = nowTimeStr();
+  startTimestamp = now.getTime();
   const { data, error } = await sb.from('records').insert({
-    date: toDateStr(now),
-    start_time: timeStr,
-    category_id: catId,
-    category_name: cat.name,
-    is_running: true
+    date: toDateStr(now), start_time: nowTimeStr(),
+    category_id: catId, category_name: cat.name, is_running: true
   }).select().single();
-  if (error) { showToast('❌ 启动失败'); console.error(error); return; }
+  if (error) { showToast('❌ 启动失败'); return; }
   runningRecord = data;
   startTimer();
   showToast(`▶️ 开始：${cat.icon} ${cat.name}`);
 }
-
 function startTimer() {
   clearInterval(timerInterval);
   renderRunning();
   timerInterval = setInterval(renderRunning, 1000);
 }
-
 function renderRunning() {
   const wrap = document.getElementById('runningCard');
   if (!runningRecord) { wrap.innerHTML = ''; return; }
   const cat = categories.find(c => c.id === runningRecord.category_id) || {};
-
-  // ✅ 直接用时间戳差值，绝对准确
-  const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
-  const h = String(Math.floor(elapsed / 3600)).padStart(2,'0');
-  const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2,'0');
-  const s = String(elapsed % 60).padStart(2,'0');
-
+  const elapsed = Math.max(0, Math.floor((Date.now() - startTimestamp) / 1000));
+  const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
+  const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+  const s = String(elapsed%60).padStart(2,'0');
   wrap.innerHTML = `
     <div class="running-card">
-      <div class="running-badge">
-        <div class="running-dot"></div>
-        正在计时
-      </div>
+      <div class="running-badge"><div class="running-dot"></div>正在计时</div>
       <div class="running-cat">${cat.icon||'⏱'} ${runningRecord.category_name}</div>
       <div class="running-time">${h}:${m}:${s}</div>
-      <div class="running-start">开始于 ${fmtTime(runningRecord.start_time)}</div>
+      <div class="running-start">开始于${fmtTime(runningRecord.start_time)}</div>
       <button class="stop-btn" onclick="stopTimer()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
         停止计时
       </button>
     </div>`;
 }
-
 async function stopTimer() {
   if (!runningRecord) return;
   clearInterval(timerInterval);
-  const endStr = nowTimeStr();
   const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
   const dur = Math.round(elapsed / 60);
   await sb.from('records').update({
-    end_time: endStr,
-    duration_minutes: Math.max(0, dur),
-    is_running: false
+    end_time: nowTimeStr(), duration_minutes: Math.max(0, dur), is_running: false
   }).eq('id', runningRecord.id);
   showToast(`✅ 已记录 ${fmtDur(dur)}`);
-  runningRecord = null;
-  startTimestamp = null;document.getElementById('runningCard').innerHTML = '';
+  runningRecord = null; startTimestamp = null;
+  document.getElementById('runningCard').innerHTML = '';
 }
 
 // ===== 手动添加 =====
@@ -660,11 +550,10 @@ async function addRecord() {
   if (!date||!start||!end||!catId) { showToast('⚠️ 请填写完整信息'); return; }
   if (end <= start) { showToast('⚠️ 结束时间必须晚于开始时间'); return; }
   const cat = categories.find(c => c.id === catId);
-  const dur = calcMins(start, end);
   const { error } = await sb.from('records').insert({
     date, start_time: start, end_time: end,
-    duration_minutes: dur, category_id: catId,
-    category_name: cat.name, note, is_running: false
+    duration_minutes: calcMins(start, end),
+    category_id: catId, category_name: cat.name, note, is_running: false
   });
   if (error) { showToast('❌ 添加失败'); return; }
   showToast('✅ 添加成功');
@@ -677,14 +566,55 @@ async function addRecord() {
 async function loadHistory() {
   const date = document.getElementById('historyDate').value;
   const list = document.getElementById('historyList');
+  const tipEl = document.getElementById('fillTip');
   list.innerHTML = '<div class="loading">加载中...</div>';
+  tipEl.innerHTML = '';
+
   const { data } = await sb.from('records').select('*')
     .eq('date', date).eq('is_running', false).order('start_time');
-  if (!data || !data.length) {
+
+  //===== 功能1：自动填充"其他" =====
+  const selectedDate = new Date(date + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const isYesterday = selectedDate < today;
+
+  let filledRecords = data ? [...data] : [];
+  let fillCount = 0;
+
+  if (isYesterday && data) {
+    const gaps = findGaps(data, '00:00', '23:59');
+    if (gaps.length > 0) {
+      fillCount = gaps.length;
+      // 找到或创建"其他"分类
+      let otherCat = categories.find(c => c.name === '其他');
+      if (!otherCat) {
+        const { data: newCat } = await sb.from('categories').insert({ name: '其他', icon: '⬜', color: '#94a3b8' }).select().single();
+        if (newCat) { categories.push(newCat); otherCat = newCat; }
+      }
+      if (otherCat) {
+        for (const gap of gaps) {
+          const dur = calcMins(gap.start, gap.end);
+          if (dur > 0) {
+            await sb.from('records').insert({
+              date, start_time: gap.start, end_time: gap.end,
+              duration_minutes: dur, category_id: otherCat.id,
+              category_name: '其他', note: '自动填充', is_running: false
+            });
+          }
+        }// 重新加载
+        const { data: newData } = await sb.from('records').select('*')
+          .eq('date', date).eq('is_running', false).order('start_time');
+        filledRecords = newData || [];
+        tipEl.innerHTML = `<div class="fill-tip">✅ 已自动用「其他」填充 ${fillCount} 段空白时间</div>`;
+      }
+    }
+  }
+
+  if (!filledRecords.length) {
     list.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>这天暂无记录</p></div>';
     return;
   }
-  list.innerHTML = `<div class="card">${data.map(r => {
+  list.innerHTML = `<div class="card">${filledRecords.map(r => {
     const cat = categories.find(c => c.id === r.category_id) || {};
     return `<div class="record-item">
       <div class="record-dot" style="background:${cat.color||'#6366f1'}20;">${cat.icon||'📌'}</div>
@@ -702,13 +632,28 @@ async function loadHistory() {
   }).join('')}</div>`;
 }
 
+//找出时间空隙
+function findGaps(records, dayStart, dayEnd) {
+  if (!records.length) return [{ start: dayStart, end: dayEnd }];
+  const sorted = [...records].sort((a,b) => a.start_time.localeCompare(b.start_time));
+  const gaps = [];
+  let cursor = dayStart;
+  for (const r of sorted) {
+    const rStart = r.start_time.slice(0,5);
+    if (rStart > cursor) gaps.push({ start: cursor, end: rStart });
+    const rEnd = r.end_time ? r.end_time.slice(0,5) : rStart;
+    if (rEnd > cursor) cursor = rEnd;
+  }
+  if (cursor < dayEnd) gaps.push({ start: cursor, end: dayEnd });
+  return gaps;
+}
+
 async function deleteRecord(id) {
   if (!confirm('确认删除这条记录？')) return;
   await sb.from('records').delete().eq('id', id);
   showToast('🗑️ 已删除');
   loadHistory();
 }
-
 async function openEdit(id) {
   const { data } = await sb.from('records').select('*').eq('id', id).single();
   if (!data) return;
@@ -721,7 +666,6 @@ async function openEdit(id) {
   document.getElementById('eCat').value = data.category_id;
   document.getElementById('editModal').classList.add('show');
 }
-function closeModal() { document.getElementById('editModal').classList.remove('show'); }
 async function saveEdit() {
   const date = document.getElementById('eDate').value;
   const start = document.getElementById('eStart').value;
@@ -730,14 +674,13 @@ async function saveEdit() {
   const note = document.getElementById('eNote').value;
   if (!date||!start||!end) { showToast('⚠️ 请填写完整'); return; }
   const cat = categories.find(c => c.id === catId);
-  const dur = calcMins(start, end);
   await sb.from('records').update({
     date, start_time: start, end_time: end,
-    duration_minutes: Math.max(0,dur),
+    duration_minutes: Math.max(0, calcMins(start, end)),
     category_id: catId, category_name: cat.name, note
   }).eq('id', editingId);
   showToast('✅ 已保存');
-  closeModal();
+  closeModal('editModal');
   loadHistory();
 }
 
@@ -755,23 +698,19 @@ async function loadStats() {
   if (currentStatTab === 'day') {
     start = end = toDateStr(now);
   } else if (currentStatTab === 'week') {
-    const d = new Date(now);
-    d.setDate(d.getDate() - ((d.getDay()+6)%7));
+    const d = new Date(now); d.setDate(d.getDate()-((d.getDay()+6)%7));
     start = toDateStr(d);
-    const e = new Date(d); e.setDate(e.getDate()+6);
-    end = toDateStr(e);
+    const e = new Date(d); e.setDate(e.getDate()+6); end = toDateStr(e);
   } else if (currentStatTab === 'month') {
     start = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
     end = toDateStr(new Date(now.getFullYear(), now.getMonth()+1, 0));
   } else {
-    start = `${now.getFullYear()}-01-01`;
-    end = `${now.getFullYear()}-12-31`;
+    start = `${now.getFullYear()}-01-01`; end = `${now.getFullYear()}-12-31`;
   }
 
   const { data } = await sb.from('records').select('*')
     .gte('date', start).lte('date', end).eq('is_running', false);
   const records = data || [];
-
   const total = records.reduce((s,r) => s+(r.duration_minutes||0), 0);
   document.getElementById('statTotal').textContent = total ? fmtDur(total) : '0m';
   document.getElementById('statCount').textContent = records.length;
@@ -779,27 +718,48 @@ async function loadStats() {
   // 分类汇总
   const catMap = {};
   records.forEach(r => {
-    const cat = categories.find(c => c.id === r.category_id)|| { name: r.category_name||'未知', color: '#6366f1', icon: '📌' };
+    const cat = categories.find(c => c.id === r.category_id) || { name: r.category_name||'未知', color: '#6366f1', icon: '📌' };
     const key = r.category_id || r.category_name;
-    if (!catMap[key]) catMap[key] = { cat, mins: 0 };
+    if (!catMap[key]) catMap[key] = { cat, mins: 0, notes: {} };
     catMap[key].mins += r.duration_minutes||0;
+    // 备注统计
+    const noteKey = r.note && r.note.trim() ? r.note.trim() : '（无备注）';
+    catMap[key].notes[noteKey] = (catMap[key].notes[noteKey]||0) + (r.duration_minutes||0);
   });
   const catArr = Object.values(catMap).sort((a,b) => b.mins - a.mins);
   const maxMins = catArr[0]?.mins || 1;
 
-  // 分类详情
+  //===== 功能2：分类详情 + 备注统计 =====
   document.getElementById('catStats').innerHTML = catArr.length
-    ? catArr.map(({cat,mins}) => `
-      <div class="cat-stat-item">
-        <span style="font-size:20px;width:28px;text-align:center;">${cat.icon}</span>
-        <span style="font-size:13px;font-weight:600;min-width:48px;color:${cat.color};">${cat.name}</span>
-        <div class="cat-stat-bar-wrap">
-          <div class="cat-stat-bar" style="width:${(mins/maxMins*100).toFixed(1)}%;background:${cat.color};"></div>
-        </div><span class="cat-stat-time">${fmtDur(mins)}</span>
-      </div>`).join('')
+    ? catArr.map(({cat, mins, notes}, idx) => {
+        const noteArr = Object.entries(notes).sort((a,b) => b[1]-a[1]);
+        const hasNotes = noteArr.some(([k]) => k !== '（无备注）') || noteArr.length > 1;
+        return `
+        <div class="cat-stat-item">
+          <div class="cat-stat-header" onclick="toggleNoteStats('ns-${idx}','arr-${idx}')">
+            <span style="font-size:20px;width:28px;text-align:center;">${cat.icon}</span>
+            <span style="font-size:13px;font-weight:600;min-width:48px;color:${cat.color};">${cat.name}</span><div class="cat-stat-bar-wrap">
+              <div class="cat-stat-bar" style="width:${(mins/maxMins*100).toFixed(1)}%;background:${cat.color};"></div>
+            </div>
+            <span class="cat-stat-time">${fmtDur(mins)}</span><span class="cat-stat-arrow" id="arr-${idx}">▶</span>
+          </div>
+          <div class="note-stats" id="ns-${idx}">
+            <div class="note-chart-wrap"><canvas id="nc-${idx}"></canvas></div>
+            ${noteArr.map(([k,v]) => `
+              <div class="note-stat-item">
+                <span class="note-stat-label">${k}</span>
+                <div class="note-stat-bar-wrap">
+                  <div class="note-stat-bar" style="width:${(v/mins*100).toFixed(1)}%;background:${cat.color};"></div>
+                </div>
+                <span class="note-stat-time">${fmtDur(v)}</span></div>`).join('')}
+          </div>
+        </div>`;}).join('')
     : '<div class="empty"><p>暂无数据</p></div>';
 
-  // ===== 饼状图 =====
+  // 预存noteArr 数据供图表使用
+  window._catStatData = catArr;
+
+  // 饼状图
   if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance = null; }
   const pieCanvas = document.getElementById('pieChart');
   if (catArr.length && total > 0) {
@@ -807,170 +767,154 @@ async function loadStats() {
       type: 'doughnut',
       data: {
         labels: catArr.map(({cat}) => `${cat.icon} ${cat.name}`),
-        datasets: [{
-          data: catArr.map(({mins}) => mins),
-          backgroundColor: catArr.map(({cat}) => cat.color),
-          borderWidth: 3,
-          borderColor: '#ffffff',
-          hoverOffset: 10
-        }]
+        datasets: [{ data: catArr.map(({mins}) => mins), backgroundColor: catArr.map(({cat}) => cat.color), borderWidth: 3, borderColor: '#fff', hoverOffset: 10 }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '62%',
+        responsive: true, maintainAspectRatio: false, cutout: '62%',
         plugins: {
-          legend: {
-            position: 'bottom',labels: {
-              font: { size: 11, weight: '600' },
-              padding: 14,
-              boxWidth: 10,
-              boxHeight: 10,
-              usePointStyle: true,
-              pointStyle: 'circle'
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                const pct = total > 0 ? (ctx.raw/total*100).toFixed(1) : 0;
-                return `  ${fmtDur(ctx.raw)}（${pct}%）`;
-              }
-            }
-          }
+          legend: { position: 'bottom', labels: { font: { size: 11, weight: '600' }, padding: 14, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle' } },
+          tooltip: { callbacks: { label: ctx => `  ${fmtDur(ctx.raw)}（${total>0?(ctx.raw/total*100).toFixed(1):0}%）` } }
         }
       }
     });
-  } else {
-    const ctx2 = pieCanvas.getContext('2d');
-    ctx2.clearRect(0, 0, pieCanvas.width, pieCanvas.height);
-    ctx2.fillStyle = '#94a3b8';
-    ctx2.font = '14px sans-serif';
-    ctx2.textAlign = 'center';
-    ctx2.fillText('暂无数据', pieCanvas.width/2, pieCanvas.height/2);
   }
 
-  // ===== 柱状图 =====
+  //柱状图
   let chartLabels = [], chartData = [], chartColors = [];
   if (currentStatTab === 'day') {
     const hourMap = {};
-    records.forEach(r => {
-      const h = parseInt(r.start_time.slice(0,2));
-      hourMap[h] = (hourMap[h]||0) + (r.duration_minutes||0);
-    });
-    for (let i = 6; i <= 23; i++) {
-      chartLabels.push(`${i}`);
-      chartData.push(hourMap[i]||0);
-      chartColors.push(i === new Date().getHours() ? '#6366f1' : '#c7d2fe');
-    }
+    records.forEach(r => { const h = parseInt(r.start_time.slice(0,2)); hourMap[h] = (hourMap[h]||0)+(r.duration_minutes||0); });
+    for (let i=6;i<=23;i++) { chartLabels.push(`${i}`); chartData.push(hourMap[i]||0); chartColors.push(i===new Date().getHours()?'#6366f1':'#c7d2fe'); }
   } else if (currentStatTab === 'week') {
     const dayNames = ['一','二','三','四','五','六','日'];
     const dayMap = {};
-    records.forEach(r => {
-      const d = new Date(r.date+'T12:00:00');
-      const k = (d.getDay()+6)%7;
-      dayMap[k] = (dayMap[k]||0)+(r.duration_minutes||0);
-    });
-    for (let i = 0; i < 7; i++) {
-      chartLabels.push(`周${dayNames[i]}`);
-      chartData.push(+(((dayMap[i]||0)/60).toFixed(1)));
-      chartColors.push(i===((now.getDay()+6)%7) ? '#6366f1' : '#c7d2fe');
-    }
+    records.forEach(r => { const d=new Date(r.date+'T12:00:00'); const k=(d.getDay()+6)%7; dayMap[k]=(dayMap[k]||0)+(r.duration_minutes||0); });
+    for (let i=0;i<7;i++) { chartLabels.push(`周${dayNames[i]}`); chartData.push(+((dayMap[i]||0)/60).toFixed(1)); chartColors.push(i===((now.getDay()+6)%7)?'#6366f1':'#c7d2fe'); }
   } else if (currentStatTab === 'month') {
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    const dim = new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
     const dayMap = {};
-    records.forEach(r => {
-      const d = parseInt(r.date.split('-')[2]);
-      dayMap[d] = (dayMap[d]||0)+(r.duration_minutes||0);
-    });
-    for (let i = 1; i <= daysInMonth; i++) {
-      chartLabels.push(`${i}`);
-      chartData.push(+(((dayMap[i]||0)/60).toFixed(1)));
-      chartColors.push(i===now.getDate() ? '#6366f1' : '#c7d2fe');
-    }
+    records.forEach(r => { const d=parseInt(r.date.split('-')[2]); dayMap[d]=(dayMap[d]||0)+(r.duration_minutes||0); });
+    for (let i=1;i<=dim;i++) { chartLabels.push(`${i}`); chartData.push(+((dayMap[i]||0)/60).toFixed(1)); chartColors.push(i===now.getDate()?'#6366f1':'#c7d2fe'); }
   } else {
-    const mNames = ['1','2','3','4','5','6','7','8','9','10','11','12'];
     const mMap = {};
-    records.forEach(r => {
-      const m = parseInt(r.date.split('-')[1])-1;
-      mMap[m] = (mMap[m]||0)+(r.duration_minutes||0);
-    });
-    for (let i = 0; i < 12; i++) {
-      chartLabels.push(`${mNames[i]}月`);
-      chartData.push(+(((mMap[i]||0)/60).toFixed(1)));
-      chartColors.push(i===now.getMonth() ? '#6366f1' : '#c7d2fe');
-    }
+    records.forEach(r => { const m=parseInt(r.date.split('-')[1])-1; mMap[m]=(mMap[m]||0)+(r.duration_minutes||0); });
+    for (let i=0;i<12;i++) { chartLabels.push(`${i+1}月`); chartData.push(+((mMap[i]||0)/60).toFixed(1)); chartColors.push(i===now.getMonth()?'#6366f1':'#c7d2fe'); }
   }
 
   if (barChartInstance) { barChartInstance.destroy(); barChartInstance = null; }
-  const barCanvas = document.getElementById('barChart');
-  barChartInstance = new Chart(barCanvas, {
+  barChartInstance = new Chart(document.getElementById('barChart'), {
     type: 'bar',
-    data: {
-      labels: chartLabels,
-      datasets: [{
-        data: chartData,
-        backgroundColor: chartColors,
-        borderRadius: 8,
-        borderSkipped: false,
-        maxBarThickness: 32
-      }]
-    },
+    data: { labels: chartLabels, datasets: [{ data: chartData, backgroundColor: chartColors, borderRadius: 8, borderSkipped: false, maxBarThickness: 32 }] },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: {
-          grid: { display: false },
-          ticks: { font: { size: 10 }, maxRotation: 0, color: '#94a3b8' }
-        },
-        y: {
-          grid: { color: '#f1f5f9' },
-          ticks: { font: { size: 10 }, color: '#94a3b8' },
-          beginAtZero: true
-        }
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 0, color: '#94a3b8' } },
+        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#94a3b8' }, beginAtZero: true }
       }
     }
   });
 }
 
+// 展开/收起备注统计
+function toggleNoteStats(nsId, arrId) {
+  const ns = document.getElementById(nsId);
+  const arr = document.getElementById(arrId);
+  const isOpen = ns.classList.contains('open');
+  ns.classList.toggle('open');
+  arr.classList.toggle('open');
+
+  if (!isOpen) {
+    // 找到对应分类数据并渲染图表
+    const idx = parseInt(nsId.split('-')[1]);
+    const catData = window._catStatData[idx];
+    if (!catData) return;
+    const noteArr = Object.entries(catData.notes).sort((a,b) => b[1]-a[1]);
+    const canvasId = `nc-${idx}`;
+    if (noteChartInstances[canvasId]) { noteChartInstances[canvasId].destroy(); }
+    noteChartInstances[canvasId] = new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: {
+        labels: noteArr.map(([k]) => k.length > 8 ? k.slice(0,8)+'…' : k),
+        datasets: [{
+          data: noteArr.map(([,v]) => v),
+          backgroundColor: catData.cat.color,
+          borderRadius: 6, borderSkipped: false, maxBarThickness: 36
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtDur(ctx.raw)}` } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94a3b8' } },
+          y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#94a3b8' }, beginAtZero: true }
+        }
+      }
+    });
+  }
+}
+
 // ===== 导出 =====
 async function exportCSV() {
-  const { data } = await sb.from('records').select('*')
-    .eq('is_running', false).order('date').order('start_time');
+  const { data } = await sb.from('records').select('*').eq('is_running', false).order('date').order('start_time');
   if (!data?.length) { showToast('暂无数据'); return; }
   const rows = [['日期','开始','结束','时长(分钟)','分类','备注']];
   data.forEach(r => rows.push([r.date, fmtTime(r.start_time), fmtTime(r.end_time), r.duration_minutes||0, r.category_name||'', r.note||'']));
   const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `时间记录_${toDateStr(new Date())}.csv`;
-  a.click();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `时间记录_${toDateStr(new Date())}.csv`; a.click();
 }
 async function exportJSON() {
   const { data } = await sb.from('records').select('*').eq('is_running', false).order('date');
   if (!data?.length) { showToast('暂无数据'); return; }
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `时间记录_${toDateStr(new Date())}.json`;
-  a.click();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `时间记录_${toDateStr(new Date())}.json`; a.click();
 }
 
-// ===== 分类管理 =====
+//===== 分类管理 =====
 function renderCatManage() {
   document.getElementById('catManageList').innerHTML = categories.length
     ? categories.map(c => `
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);">
-        <div style="width:36px;height:36px;border-radius:10px;background:${c.color}20;display:flex;align-items:center;justify-content:center;font-size:18px;">${c.icon}</div>
-        <span style="flex:1;font-size:14px;font-weight:600;">${c.name}</span>
-        <div style="width:16px;height:16px;border-radius:50%;background:${c.color};"></div>
-        <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
+      <div class="cat-manage-item">
+        <div class="cat-manage-icon" style="background:${c.color}20;">${c.icon}</div>
+        <span class="cat-manage-name">${c.name}</span>
+        <div style="width:16px;height:16px;border-radius:50%;background:${c.color};margin-right:4px;"></div>
+        <div class="cat-manage-actions">
+          <button class="btn-icon" onclick="openEditCat('${c.id}')">✏️</button>
+          <button class="btn-icon" onclick="deleteCategory('${c.id}')">🗑️</button>
+        </div>
       </div>`).join('')
     : '<div style="color:var(--sub);font-size:13px;padding:10px 0;">暂无分类</div>';
 }
+
+//===== 功能3：编辑分类 =====
+function openEditCat(id) {
+  const cat = categories.find(c => c.id === id);
+  if (!cat) return;
+  document.getElementById('editCatId').value = id;
+  document.getElementById('editCatName').value = cat.name;
+  document.getElementById('editCatIcon').value = cat.icon;
+  document.getElementById('editCatColor').value = cat.color;
+  document.getElementById('editCatModal').classList.add('show');
+}
+async function saveEditCat() {
+  const id = document.getElementById('editCatId').value;
+  const name = document.getElementById('editCatName').value.trim();
+  const icon = document.getElementById('editCatIcon').value.trim() || '📌';
+  const color = document.getElementById('editCatColor').value;
+  if (!name) { showToast('⚠️ 请输入分类名称'); return; }
+  const { error } = await sb.from('categories').update({ name, icon, color }).eq('id', id);
+  if (error) { showToast('❌ 保存失败'); return; }
+  // 同步更新已有记录的分类名
+  await sb.from('records').update({ category_name: name }).eq('category_id', id);
+  showToast('✅ 分类已更新');
+  closeModal('editCatModal');
+  await loadCategories();
+  renderCatManage();
+}
+
 async function addCategory() {
   const name = document.getElementById('newCatName').value.trim();
   const icon = document.getElementById('newCatIcon').value.trim() || '📌';
