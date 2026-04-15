@@ -5,11 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>时间记录器</title>
 
-<!-- Android桌面图标 -->
-<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%E6%97%B6%E9%97%B4%E8%AE%B0%E5%BD%95%E5%99%A8%22%2C%22short_name%22%3A%22%E6%97%B6%E9%97%B4%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Flazyman.yixiaai.com%2Ffiles%2F493395%2F17f4f023-52a8-44db-8af1-e4ef905a54a2.jpeg%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4ff%22%2C%22theme_color%22%3A%22%236366f1%22%7D">
+<!-- 桌面图标配置 -->
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="时间记录器">
 <meta name="theme-color" content="#6366f1">
-<link rel="apple-touch-icon" href="https://lazyman.yixiaai.com/files/493395/17f4f023-52a8-44db-8af1-e4ef905a54a2.jpeg">
+<link rel="apple-touch-icon" href="https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg">
+<link rel="icon" href="https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg">
+<script>
+// Android PWA manifest 动态注入
+const manifest = {
+  name: "时间记录器",
+  short_name: "时间记录",
+  start_url: location.href,
+  display: "standalone",
+  background_color: "#f0f4ff",
+  theme_color: "#6366f1",
+  icons: [{
+    src: "https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg",
+    sizes: "512x512",
+    type: "image/jpeg",
+    purpose: "any maskable"
+  }]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = URL.createObjectURL(blob);
+document.currentScript.after(link);
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -63,17 +87,17 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 .btn-primary:active { opacity: 0.88; transform: scale(0.98); }
 
 /* 备注选择器 */
-.note-selector { position: relative; }
-.note-input-row { display: flex; gap: 8px; align-items: center; }
-.note-input-row .form-input { flex: 1; }
-.note-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.note-tag { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--text); transition: all 0.15s; }
-.note-tag:active { transform: scale(0.95); }
-.note-tag.selected { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
-.note-tag .tag-del { font-size: 11px; color: #94a3b8; margin-left: 2px; }
-.note-tag .tag-del:hover { color: #ef4444; }
-.note-add-btn { flex-shrink: 0; width: 40px; height: 44px; border-radius: 12px; border: 1.5px dashed var(--border); background: white; cursor: pointer; font-size: 20px; color: var(--sub); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-.note-add-btn:active { background: var(--bg); }
+.note-input-wrap { position: relative; }
+.note-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1.5px solid var(--primary); border-top: none; border-radius: 0 0 12px 12px; z-index: 50; max-height: 200px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+.note-suggestion-item { display: flex; align-items: center; padding: 10px 14px; cursor: pointer; gap: 8px; border-bottom: 1px solid var(--border); }
+.note-suggestion-item:last-child { border-bottom: none; }
+.note-suggestion-item:active { background: var(--bg); }
+.note-suggestion-text { flex: 1; font-size: 14px; }
+.note-suggestion-count { font-size: 11px; color: var(--sub); background: var(--bg); padding: 2px 7px; border-radius: 10px; }
+.note-suggestion-del { font-size: 14px; color: #ef4444; padding: 2px 4px; }
+.note-preset-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.note-tag { padding: 5px 12px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.15s; color: var(--text); }
+.note-tag:active, .note-tag.selected { background: var(--primary); color: white; border-color: var(--primary); }
 
 .record-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .record-item:last-child { border-bottom: none; }
@@ -90,7 +114,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 .stat-tabs { display: flex; background: white; border-radius: 14px; padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow); }
 .stat-tab { flex: 1; text-align: center; padding: 9px 4px; border-radius: 11px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--sub); border: none; background: none; transition: all 0.2s; }
 .stat-tab.active { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; box-shadow: 0 3px 10px rgba(99,102,241,0.35); }
-.stat-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-summary { display: grid; grid-template-columns:1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .stat-card { background: white; border-radius: 14px; padding: 16px; box-shadow: var(--shadow); }
 .stat-val { font-size: 26px; font-weight: 800; color: var(--primary); }
 .stat-lbl { font-size: 11px; color: var(--sub); margin-top: 3px; font-weight: 500; }
@@ -109,7 +133,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 .cat-stat-time { font-size: 12px; font-weight: 700; color: var(--sub); min-width: 52px; text-align: right; }
 .cat-stat-arrow { font-size: 11px; color: var(--sub); transition: transform 0.25s; flex-shrink: 0; margin-left: 2px; }
 .cat-stat-arrow.open { transform: rotate(90deg); }
-
 .note-stats { display: none; background: var(--bg); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
 .note-stats.open { display: block; }
 .note-chart-wrap { height: 150px; position: relative; margin-bottom: 10px; }
@@ -149,18 +172,24 @@ select.form-input { appearance: none; -webkit-appearance: none; }
 .cat-manage-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .cat-manage-name { flex: 1; font-size: 14px; font-weight: 600; }
 
+/* 备注管理 */
+.preset-note-item { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.preset-note-item:last-child { border-bottom: none; }
+.preset-note-text { flex: 1; font-size: 14px; }
+.preset-note-cat { font-size: 11px; color: var(--sub); background: var(--bg); padding: 2px 8px; border-radius: 10px; }
+
 .fill-tip { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: #166534; display: flex; align-items: center; gap: 8px; }
 
-/* 分类备注管理 */
-.cat-notes-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.cat-notes-title { font-size: 11px; font-weight: 700; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-.cat-note-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-.cat-note-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; background: var(--bg); border: 1px solid var(--border); color: var(--text); }
-.cat-note-tag-del { background: none; border: none; cursor: pointer; font-size: 12px; color: #94a3b8; padding: 0 2px; line-height: 1; }
-.cat-note-tag-del:hover { color: #ef4444; }
-.cat-note-add-row { display: flex; gap: 8px; }
-.cat-note-add-row .form-input { flex: 1; padding: 9px 12px; font-size: 13px; }
-.btn-sm { padding: 9px 14px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+/* 分类备注管理区块 */
+.cat-notes-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.cat-notes-title { font-size: 11px; color: var(--sub); font-weight: 600; margin-bottom: 8px; }
+.cat-note-tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.cat-note-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px; font-size: 12px; }
+.cat-note-tag-del { color: #ef4444; cursor: pointer; font-size: 13px; line-height: 1; }
+.cat-note-add-row { display: flex; gap: 6px; }
+.cat-note-add-input { flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; background: var(--bg); color: var(--text); outline: none; }
+.cat-note-add-input:focus { border-color: var(--primary); }
+.cat-note-add-btn { padding: 8px 14px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 13px; cursor: pointer; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -202,17 +231,17 @@ select.form-input { appearance: none; -webkit-appearance: none; }
     </div>
     <div class="form-group">
       <label class="form-label">分类</label>
-      <select class="form-input" id="fCat" onchange="renderNoteTags('fNote','fNoteTags',this.value)"></select>
+      <select class="form-input" id="fCat" onchange="renderNoteTagsFor('fNote','fCat')"></select>
     </div>
-    <!-- 备注选择器 -->
     <div class="form-group">
       <label class="form-label">备注（可选）</label>
-      <div class="note-selector">
-        <div class="note-input-row">
-          <input type="text" class="form-input" id="fNote" placeholder="输入或选择备注">
-        </div>
-        <div class="note-tags" id="fNoteTags"></div>
+      <div class="note-input-wrap">
+        <input type="text" class="form-input" id="fNote" placeholder="输入或选择备注" autocomplete="off"
+          oninput="showNoteSuggestions('fNote','fCat','fNoteSug')"
+          onfocus="showNoteSuggestions('fNote','fCat','fNoteSug')">
+        <div class="note-suggestions" id="fNoteSug" style="display:none;"></div>
       </div>
+      <div class="note-preset-tags" id="fNoteTags"></div>
     </div>
     <button class="btn-primary" onclick="addRecord()">添加记录</button>
   </div>
@@ -303,7 +332,7 @@ select.form-input { appearance: none; -webkit-appearance: none; }
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="20" x2="18" y2="10"/>
         <line x1="12" y1="20" x2="12" y2="4"/>
-        <line x1="6" y1="20" x2="6" y2="14"/>
+        <line x1="6" y1="20 " x2="6" y2="14"/>
       </svg>
     </div>统计
   </button>
@@ -322,4 +351,745 @@ select.form-input { appearance: none; -webkit-appearance: none; }
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <div class="modal-title">编辑记
+      <div class="modal-title">编辑记录</div>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">日期</label><input type="date" class="form-input" id="eDate"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">开始时间</label><input type="time" class="form-input" id="eStart"></div>
+      <div class="form-group"><label class="form-label">结束时间</label><input type="time" class="form-input" id="eEnd"></div>
+    </div>
+    <div class="form-group"><label class="form-label">分类</label><select class="form-input" id="eCat" onchange="renderNoteTagsFor('eNote','eCat')"></select></div>
+    <div class="form-group">
+      <label class="form-label">备注</label>
+      <div class="note-input-wrap">
+        <input type="text" class="form-input" id="eNote" placeholder="输入或选择备注" autocomplete="off"
+          oninput="showNoteSuggestions('eNote','eCat','eNoteSug')"
+          onfocus="showNoteSuggestions('eNote','eCat','eNoteSug')">
+        <div class="note-suggestions" id="eNoteSug" style="display:none;"></div>
+      </div>
+      <div class="note-preset-tags" id="eNoteTags"></div>
+    </div>
+    <button class="btn-primary" onclick="saveEdit()">保存修改</button>
+  </div>
+</div>
+
+<!-- 编辑分类模态框 -->
+<div class="modal-overlay" id="editCatModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">编辑分类</div>
+      <button class="modal-close" onclick="closeModal('editCatModal')">✕</button>
+    </div>
+    <input type="hidden" id="editCatId">
+    <div class="form-group"><label class="form-label">分类名称</label><input type="text" class="form-input" id="editCatName"></div>
+    <div class="form-group"><label class="form-label">图标（emoji）</label><input type="text" class="form-input" id="editCatIcon" style="font-size:24px;text-align:center;"></div>
+    <div class="form-group">
+      <label class="form-label">颜色</label>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <input type="color" id="editCatColor" style="width:48px;height:48px;border:none;border-radius:12px;cursor:pointer;padding:3px;">
+        <span style="font-size:13px;color:var(--sub);">点击色块选择颜色</span>
+      </div>
+    </div>
+    <!-- 功能2：分类固定备注管理 -->
+    <div class="cat-notes-section">
+      <div class="cat-notes-title">📌 固定备注选项（记录时可快速选择）</div>
+      <div class="cat-note-tag-wrap" id="editCatNoteList"></div>
+      <div class="cat-note-add-row">
+        <input type="text" class="cat-note-add-input" id="newCatNote" placeholder="添加固定备注...">
+        <button class="cat-note-add-btn" onclick="addCatNote()">+ 添加</button>
+      </div>
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn-primary" onclick="saveEditCat()">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://buyrevhbxypsekpmctmj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_aDBUcvGvxxxyr1XS37JX3g_WnE3s6x-';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let categories = [];
+let runningRecord = null;
+let timerInterval = null;
+let startTimestamp = null;
+let currentStatTab = 'day';
+let editingId = null;
+let barChartInstance = null;
+let pieChartInstance = null;
+const noteChartInstances = {};
+// 编辑分类时临时存储备注列表
+let editingCatNotes = [];
+
+// ===== 工具函数 =====
+function toDateStr(d) {
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function nowTimeStr() {
+  const n = new Date();
+  return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+}
+function formatDateCN(d) {
+  const days=['周日','周一','周二','周三','周四','周五','周六'];
+  return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+days[d.getDay()];
+}
+function fmtDur(mins) {
+  if (mins===null||mins===undefined||isNaN(mins)) return '-';
+  mins = Math.max(0,Math.round(mins));
+  if (mins<60) return mins+'分钟';
+  const h=Math.floor(mins/60),m=mins%60;
+  return m ? h+'h '+m+'m' : h+'h';
+}
+function fmtTime(t) { return t ? t.slice(0,5) : '--:--'; }
+function calcMins(start,end) {
+  const [sh,sm]=start.split(':').map(Number);
+  const [eh,em]=end.split(':').map(Number);
+  return (eh*60+em)-(sh*60+sm);
+}
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// 关闭所有备注下拉
+function closeAllSuggestions() {
+  document.querySelectorAll('.note-suggestions').forEach(el=>el.style.display='none');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.note-input-wrap')) closeAllSuggestions();
+});
+
+// ===== 初始化 =====
+async function init() {
+  const today = new Date();
+  document.getElementById('headerDate').textContent = formatDateCN(today);
+  document.getElementById('fDate').value = toDateStr(today);
+  document.getElementById('historyDate').value = toDateStr(today);
+  document.getElementById('historyDate').addEventListener('change', loadHistory);
+  await loadCategories();
+  await checkRunning();
+  loadHistory();
+}
+
+// ===== 页面切换 =====
+function switchPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if (name==='history') loadHistory();
+  if (name==='stats') loadStats();
+  if (name==='export') renderCatManage();
+}
+
+// ===== 分类 =====
+async function loadCategories() {
+  const { data } = await sb.from('categories').select('*').order('created_at');
+  categories = data || [];
+  renderCatsGrid();
+  renderCatSelect('fCat');
+  renderCatSelect('eCat');
+  renderNoteTagsFor('fNote','fCat');
+}
+function renderCatsGrid() {
+  const grid = document.getElementById('catsGrid');
+  if (!categories.length) {
+    grid.innerHTML = '<div style="color:var(--sub);font-size:13px;padding:10px;">暂无分类，请在「更多」中添加</div>';
+    return;
+  }
+  grid.innerHTML = categories.map(c =>
+    '<button class="cat-btn" style="background:'+c.color+'18;" onclick="quickStart(\''+c.id+'\')">' +
+    '<span class="cat-icon">'+c.icon+'</span>' +
+    '<span class="cat-name" style="color:'+c.color+';">'+c.name+'</span>' +
+    '</button>'
+  ).join('');
+}
+function renderCatSelect(id) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  sel.innerHTML = categories.map(c=>'<option value="'+c.id+'">'+c.icon+' '+c.name+'</option>').join('');
+}
+
+// ===== 功能2：备注标签渲染 =====
+// 根据当前选中分类渲染固定备注标签
+function renderNoteTagsFor(noteInputId, catSelectId) {
+  const catId = document.getElementById(catSelectId) ? document.getElementById(catSelectId).value : '';
+  const tagsEl = document.getElementById(noteInputId+'Tags');
+  if (!tagsEl) return;
+  const cat = categories.find(c=>c.id===catId);
+  const presets = (cat && cat.preset_notes) ? cat.preset_notes : [];
+  if (!presets.length) { tagsEl.innerHTML = ''; return; }
+  tagsEl.innerHTML = presets.map(n =>
+    '<span class="note-tag" onclick="selectNoteTag(this,\''+noteInputId+'\')">'+escHtml(n)+'</span>'
+  ).join('');
+}
+
+function selectNoteTag(el, inputId) {
+  const input = document.getElementById(inputId);
+  // 切换选中
+  const isSelected = el.classList.contains('selected');
+  // 取消同组其他选中
+  el.closest('.note-preset-tags').querySelectorAll('.note-tag').forEach(t=>t.classList.remove('selected'));
+  if (!isSelected) {
+    el.classList.add('selected');
+    input.value = el.textContent;
+  } else {
+    input.value = '';
+  }
+  closeAllSuggestions();
+}
+
+// 输入时显示历史备注建议（来自该分类历史记录）
+async function showNoteSuggestions(noteInputId, catSelectId, sugId) {
+  const input = document.getElementById(noteInputId);
+  const sugEl = document.getElementById(sugId);
+  const catId = document.getElementById(catSelectId) ? document.getElementById(catSelectId).value : '';
+  const val = input.value.trim();
+
+  // 取该分类历史备注
+  let query = sb.from('records').select('note').eq('is_running',false);
+  if (catId) query = query.eq('category_id', catId);
+  const { data } = await query;
+
+  // 统计备注频次
+  const noteCount = {};
+  (data||[]).forEach(r => {
+    if (r.note && r.note.trim() && r.note.trim() !== '自动填充') {
+      const k = r.note.trim();
+      noteCount[k] = (noteCount[k]||0)+1;
+    }
+  });
+
+  // 合并固定备注
+  const cat = categories.find(c=>c.id===catId);
+  const presets = (cat && cat.preset_notes) ? cat.preset_notes : [];
+  presets.forEach(p => { if (!noteCount[p]) noteCount[p] = 0; });
+
+  let items = Object.entries(noteCount).sort((a,b)=>b[1]-a[1]);
+  if (val) items = items.filter(([k])=>k.toLowerCase().includes(val.toLowerCase()));
+
+  if (!items.length) { sugEl.style.display='none'; return; }
+
+  sugEl.style.display = 'block';
+  sugEl.innerHTML = items.map(([k,cnt]) =>
+    '<div class="note-suggestion-item" onclick="pickSuggestion(\''+noteInputId+'\',\''+sugId+'\',\''+escAttr(k)+'\')">' +
+    '<span class="note-suggestion-text">'+escHtml(k)+'</span>' +
+    (cnt>0 ? '<span class="note-suggestion-count">'+cnt+'次</span>' : '<span class="note-suggestion-count">固定</span>') +
+    '</div>'
+  ).join('');
+}
+
+function pickSuggestion(inputId, sugId, val) {
+  document.getElementById(inputId).value = val;
+  document.getElementById(sugId).style.display = 'none';
+  // 同步高亮标签
+  const tagsWrap = document.getElementById(inputId+'Tags');
+  if (tagsWrap) {
+    tagsWrap.querySelectorAll('.note-tag').forEach(t=>{
+      t.classList.toggle('selected', t.textContent===val);
+    });
+  }
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s) { return String(s).replace(/'/g,"\\'"); }
+
+// ===== 计时器 =====
+async function checkRunning() {
+  const { data } = await sb.from('records').select('*').eq('is_running',true).maybeSingle();
+  if (data) {
+    runningRecord = data;
+    const parts = data.start_time.slice(0,5).split(':').map(Number);
+    const sd = new Date(data.date+'T00:00:00');
+    sd.setHours(parts[0],parts[1],0,0);
+    startTimestamp = sd.getTime();
+    startTimer();
+  }
+}
+async function quickStart(catId) {
+  if (runningRecord) { showToast('⚠️ 请先停止当前计时'); return; }
+  const cat = categories.find(c=>c.id===catId);
+  const now = new Date();
+  startTimestamp = now.getTime();
+  const { data, error } = await sb.from('records').insert({
+    date: toDateStr(now), start_time: nowTimeStr(),
+    category_id: catId, category_name: cat.name, is_running: true
+  }).select().single();
+  if (error) { showToast('❌ 启动失败'); return; }
+  runningRecord = data;
+  startTimer();
+  showToast('▶️ 开始：'+cat.icon+' '+cat.name);
+}
+function startTimer() {
+  clearInterval(timerInterval);
+  renderRunning();
+  timerInterval = setInterval(renderRunning,1000);
+}
+function renderRunning() {
+  const wrap = document.getElementById('runningCard');
+  if (!runningRecord) { wrap.innerHTML=''; return; }
+  const cat = categories.find(c=>c.id===runningRecord.category_id)||{};
+  const elapsed = Math.max(0,Math.floor((Date.now()-startTimestamp)/1000));
+  const h=String(Math.floor(elapsed/3600)).padStart(2,'0');
+  const m=String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+  const s=String(elapsed%60).padStart(2,'0');
+  wrap.innerHTML =
+    '<div class="running-card">'+
+    '<div class="running-badge"><div class="running-dot"></div>正在计时</div>'+
+    '<div class="running-cat">'+(cat.icon||'⏱')+' '+runningRecord.category_name+'</div>'+
+    '<div class="running-time">'+h+':'+m+':'+s+'</div>'+
+    '<div class="running-start">开始于 '+fmtTime(runningRecord.start_time)+'</div>'+
+    '<button class="stop-btn" onclick="stopTimer()">⏹ 停止计时</button>'+
+    '</div>';
+}
+async function stopTimer() {
+  if (!runningRecord) return;
+  clearInterval(timerInterval);
+  const elapsed = Math.floor((Date.now()-startTimestamp)/1000);
+  const dur = Math.round(elapsed/60);
+  await sb.from('records').update({
+    end_time: nowTimeStr(), duration_minutes: Math.max(0,dur), is_running: false
+  }).eq('id',runningRecord.id);
+  showToast('✅ 已记录 '+fmtDur(dur));
+  runningRecord=null; startTimestamp=null;
+  document.getElementById('runningCard').innerHTML='';
+}
+
+// ===== 手动添加 =====
+async function addRecord() {
+  const date=document.getElementById('fDate').value;
+  const start=document.getElementById('fStart').value;
+  const end=document.getElementById('fEnd').value;
+  const catId=document.getElementById('fCat').value;
+  const note=document.getElementById('fNote').value;
+  if (!date||!start||!end||!catId) { showToast('⚠️ 请填写完整信息'); return; }
+  if (end<=start) { showToast('⚠️ 结束时间必须晚于开始时间'); return; }
+  const cat=categories.find(c=>c.id===catId);
+  const { error } = await sb.from('records').insert({
+    date, start_time:start, end_time:end,
+    duration_minutes:calcMins(start,end),
+    category_id:catId, category_name:cat.name, note, is_running:false
+  });
+  if (error) { showToast('❌ 添加失败'); return; }
+  showToast('✅ 添加成功');
+  document.getElementById('fStart').value='';
+  document.getElementById('fEnd').value='';
+  document.getElementById('fNote').value='';
+  document.querySelectorAll('#fNoteTags .note-tag').forEach(t=>t.classList.remove('selected'));
+}
+
+// ===== 历史记录 =====
+async function loadHistory() {
+  const date=document.getElementById('historyDate').value;
+  const list=document.getElementById('historyList');
+  const tipEl=document.getElementById('fillTip');
+  list.innerHTML='<div class="loading">加载中...</div>';
+  tipEl.innerHTML='';
+
+  const { data } = await sb.from('records').select('*')
+    .eq('date',date).eq('is_running',false).order('start_time');
+
+  const selDate=new Date(date+'T12:00:00');
+  const todayMid=new Date(); todayMid.setHours(0,0,0,0);
+  const isPast=selDate<todayMid;
+  let filledRecords=data?[...data]:[];
+
+  if (isPast&&data) {
+    const gaps=findGaps(data,'00:00','23:59').filter(g=>calcMins(g.start,g.end)>0);
+    if (gaps.length>0) {
+      let otherCat=categories.find(c=>c.name==='其他');
+      if (!otherCat) {
+        const { data:nc } = await sb.from('categories').insert({name:'其他',icon:'⬜',color:'#94a3b8'}).select().single();
+        if (nc) { categories.push(nc); otherCat=nc; renderCatsGrid(); renderCatSelect('fCat'); }
+      }
+      if (otherCat) {
+        for (const gap of gaps) {
+          await sb.from('records').insert({
+            date, start_time:gap.start, end_time:gap.end,
+            duration_minutes:calcMins(gap.start,gap.end),
+            category_id:otherCat.id, category_name:'其他', note:'自动填充', is_running:false
+          });
+        }
+        const { data:nd } = await sb.from('records').select('*')
+          .eq('date',date).eq('is_running',false).order('start_time');
+        filledRecords=nd||[];
+        tipEl.innerHTML='<div class="fill-tip">✅ 已自动用「其他」填充 '+gaps.length+' 段空白时间</div>';
+      }
+    }
+  }
+
+  if (!filledRecords.length) {
+    list.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>这天暂无记录</p></div>';
+    return;
+  }
+  const rows=filledRecords.map(r=>{
+    const cat=categories.find(c=>c.id===r.category_id)||{};
+    const color=cat.color||'#6366f1';
+    return '<div class="record-item">'+
+      '<div class="record-dot" style="background:'+color+'20;">'+(cat.icon||'📌')+'</div>'+
+      '<div class="record-info">'+
+        '<div class="record-cat">'+r.category_name+'</div>'+
+        '<div class="record-time">'+fmtTime(r.start_time)+' → '+fmtTime(r.end_time)+'</div>'+
+        (r.note?'<div class="record-note">💬 '+escHtml(r.note)+'</div>':'')+
+      '</div>'+
+      '<div class="record-dur">'+fmtDur(r.duration_minutes)+'</div>'+
+      '<div class="record-actions">'+
+        '<button class="btn-icon" onclick="openEdit(\''+r.id+'\')">✏️</button>'+
+        '<button class="btn-icon" onclick="deleteRecord(\''+r.id+'\')">🗑️</button>'+
+      '</div></div>';
+  }).join('');
+  list.innerHTML='<div class="card">'+rows+'</div>';
+}
+
+function findGaps(records,dayStart,dayEnd) {
+  if (!records||!records.length) return [{start:dayStart,end:dayEnd}];
+  const sorted=[...records].sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  const gaps=[]; let cursor=dayStart;
+  for (const r of sorted) {
+    const rStart=r.start_time.slice(0,5);
+    const rEnd=r.end_time?r.end_time.slice(0,5):rStart;
+    if (rStart>cursor) gaps.push({start:cursor,end:rStart});
+    if (rEnd>cursor) cursor=rEnd;
+  }
+  if (cursor<dayEnd) gaps.push({start:cursor,end:dayEnd});
+  return gaps;
+}
+
+async function deleteRecord(id) {
+  if (!confirm('确认删除这条记录？')) return;
+  await sb.from('records').delete().eq('id',id);
+  showToast('🗑️ 已删除'); loadHistory();
+}
+async function openEdit(id) {
+  const { data } = await sb.from('records').select('*').eq('id',id).single();
+  if (!data) return;
+  editingId=id;
+  document.getElementById('eDate').value=data.date;
+  document.getElementById('eStart').value=data.start_time?data.start_time.slice(0,5):'';
+  document.getElementById('eEnd').value=data.end_time?data.end_time.slice(0,5):'';
+  document.getElementById('eNote').value=data.note||'';
+  renderCatSelect('eCat');
+  document.getElementById('eCat').value=data.category_id;
+  renderNoteTagsFor('eNote','eCat');
+  // 高亮已选备注
+  setTimeout(()=>{
+    document.querySelectorAll('#eNoteTags .note-tag').forEach(t=>{
+      t.classList.toggle('selected', t.textContent===(data.note||''));
+    });
+  },50);
+  document.getElementById('editModal').classList.add('show');
+}
+async function saveEdit() {
+  const date=document.getElementById('eDate').value;
+  const start=document.getElementById('eStart').value;
+  const end=document.getElementById('eEnd').value;
+  const catId=document.getElementById('eCat').value;
+  const note=document.getElementById('eNote').value;
+  if (!date||!start||!end) { showToast('⚠️ 请填写完整'); return; }
+  const cat=categories.find(c=>c.id===catId);
+  await sb.from('records').update({
+    date, start_time:start, end_time:end,
+    duration_minutes:Math.max(0,calcMins(start,end)),
+    category_id:catId, category_name:cat.name, note
+  }).eq('id',editingId);
+  showToast('✅ 已保存');
+  closeModal('editModal'); loadHistory();
+}
+
+// ===== 统计 =====
+function switchStatTab(tab,btn) {
+  currentStatTab=tab;
+  document.querySelectorAll('.stat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); loadStats();
+}
+async function loadStats() {
+  const now=new Date(); let start,end;
+  if (currentStatTab==='day') { start=end=toDateStr(now); }
+  else if (currentStatTab==='week') {
+    const d=new Date(now); d.setDate(d.getDate()-((d.getDay()+6)%7)); start=toDateStr(d);
+    const e=new Date(d); e.setDate(e.getDate()+6); end=toDateStr(e);
+  } else if (currentStatTab==='month') {
+    start=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01';
+    end=toDateStr(new Date(now.getFullYear(),now.getMonth()+1,0));
+  } else { start=now.getFullYear()+'-01-01'; end=now.getFullYear()+'-12-31'; }
+
+  const { data } = await sb.from('records').select('*')
+    .gte('date',start).lte('date',end).eq('is_running',false);
+  const records=data||[];
+  const total=records.reduce((s,r)=>s+(r.duration_minutes||0),0);
+  document.getElementById('statTotal').textContent=total?fmtDur(total):'0m';
+  document.getElementById('statCount').textContent=records.length;
+
+  const catMap={};
+  records.forEach(r=>{
+    const cat=categories.find(c=>c.id===r.category_id)||{name:r.category_name||'未知',color:'#6366f1',icon:'📌'};
+    const key=r.category_id||r.category_name;
+    if (!catMap[key]) catMap[key]={cat,mins:0,notes:{}};
+    catMap[key].mins+=r.duration_minutes||0;
+    const nk=(r.note&&r.note.trim())?r.note.trim():'（无备注）';
+    catMap[key].notes[nk]=(catMap[key].notes[nk]||0)+(r.duration_minutes||0);
+  });
+  const catArr=Object.values(catMap).sort((a,b)=>b.mins-a.mins);
+  const maxMins=catArr[0]?catArr[0].mins:1;
+  window._catStatData=catArr;
+
+  let html='';
+  catArr.forEach(function(item,idx){
+    const cat=item.cat,mins=item.mins,notes=item.notes;
+    const noteArr=Object.entries(notes).sort((a,b)=>b[1]-a[1]);
+    const pct=(mins/maxMins*100).toFixed(1);
+    html+='<div class="cat-stat-item">'+
+      '<div class="cat-stat-header" onclick="toggleNoteStats(\'ns-'+idx+'\',\'arr-'+idx+'\')">'+
+        '<span style="font-size:20px;width:28px;text-align:center;">'+cat.icon+'</span>'+
+        '<span style="font-size:13px;font-weight:600;min-width:48px;color:'+cat.color+';">'+cat.name+'</span>'+
+        '<div class="cat-stat-bar-wrap"><div class="cat-stat-bar" style="width:'+pct+'%;background:'+cat.color+';"></div></div>'+
+        '<span class="cat-stat-time">'+fmtDur(mins)+'</span>'+
+        '<span class="cat-stat-arrow" id="arr-'+idx+'">▶</span>'+
+      '</div>'+
+      '<div class="note-stats" id="ns-'+idx+'">'+
+        '<div class="note-chart-wrap"><canvas id="nc-'+idx+'"></canvas></div>';
+    noteArr.forEach(function(entry){
+      const k=entry[0],v=entry[1];
+      html+='<div class="note-stat-item">'+
+        '<span class="note-stat-label">'+escHtml(k)+'</span>'+
+        '<div class="note-stat-bar-wrap"><div class="note-stat-bar" style="width:'+(v/mins*100).toFixed(1)+'%;background:'+cat.color+';"></div></div>'+
+        '<span class="note-stat-time">'+fmtDur(v)+'</span>'+
+        '</div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('catStats').innerHTML=html||'<div class="empty"><p>暂无数据</p></div>';
+
+  if (pieChartInstance) { pieChartInstance.destroy(); pieChartInstance=null; }
+  if (catArr.length&&total>0) {
+    pieChartInstance=new Chart(document.getElementById('pieChart'),{
+      type:'doughnut',
+      data:{
+        labels:
+          catArr.map(function(x){return x.cat.icon+' '+x.cat.name;}),
+        datasets:[{
+          data:catArr.map(function(x){return x.mins;}),
+          backgroundColor:catArr.map(function(x){return x.cat.color;}),
+          borderWidth:3,borderColor:'#fff',hoverOffset:10
+        }]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,cutout:'62%',
+        plugins:{
+          legend:{position:'bottom',labels:{font:{size:11,weight:'600'},padding:14,boxWidth:10,boxHeight:10,usePointStyle:true,pointStyle:'circle'}},
+          tooltip:{callbacks:{label:function(ctx){return ' '+fmtDur(ctx.raw)+'（'+(total>0?(ctx.raw/total*100).toFixed(1):0)+'%）';}}}
+        }
+      }
+    });
+  }
+
+  let chartLabels=[],chartData=[],chartColors=[];
+  if (currentStatTab==='day') {
+    const hm={};
+    records.forEach(r=>{const h=parseInt(r.start_time.slice(0,2));hm[h]=(hm[h]||0)+(r.duration_minutes||0);});
+    for (let i=6;i<=23;i++){chartLabels.push(i+'');chartData.push(hm[i]||0);chartColors.push(i===now.getHours()?'#6366f1':'#c7d2fe');}
+  } else if (currentStatTab==='week') {
+    const dn=['一','二','三','四','五','六','日'],dm={};
+    records.forEach(r=>{const d=new Date(r.date+'T12:00:00');const k=(d.getDay()+6)%7;dm[k]=(dm[k]||0)+(r.duration_minutes||0);});
+    for (let i=0;i<7;i++){chartLabels.push('周'+dn[i]);chartData.push(+((dm[i]||0)/60).toFixed(1));chartColors.push(i===((now.getDay()+6)%7)?'#6366f1':'#c7d2fe');}
+  } else if (currentStatTab==='month') {
+    const dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),dm={};
+    records.forEach(r=>{const d=parseInt(r.date.split('-')[2]);dm[d]=(dm[d]||0)+(r.duration_minutes||0);});
+    for (let i=1;i<=dim;i++){chartLabels.push(i+'');chartData.push(+((dm[i]||0)/60).toFixed(1));chartColors.push(i===now.getDate()?'#6366f1':'#c7d2fe');}
+  } else {
+    const mm={};
+    records.forEach(r=>{const m=parseInt(r.date.split('-')[1])-1;mm[m]=(mm[m]||0)+(r.duration_minutes||0);});
+    for (let i=0;i<12;i++){chartLabels.push((i+1)+'月');chartData.push(+((mm[i]||0)/60).toFixed(1));chartColors.push(i===now.getMonth()?'#6366f1':'#c7d2fe');}
+  }
+
+  if (barChartInstance){barChartInstance.destroy();barChartInstance=null;}
+  barChartInstance=new Chart(document.getElementById('barChart'),{
+    type:'bar',
+    data:{labels:chartLabels,datasets:[{data:chartData,backgroundColor:chartColors,borderRadius:8,borderSkipped:false,maxBarThickness:32}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:10},maxRotation:0,color:'#94a3b8'}},
+        y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},color:'#94a3b8'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function toggleNoteStats(nsId,arrId) {
+  const ns=document.getElementById(nsId);
+  const arr=document.getElementById(arrId);
+  if (!ns||!arr) return;
+  const isOpen=ns.classList.contains('open');
+  ns.classList.toggle('open');
+  arr.classList.toggle('open');
+  if (!isOpen) {
+    const idx=parseInt(nsId.split('-')[1]);
+    const catData=window._catStatData[idx];
+    if (!catData) return;
+    const noteArr=Object.entries(catData.notes).sort((a,b)=>b[1]-a[1]);
+    const cid='nc-'+idx;
+    if (noteChartInstances[cid]){noteChartInstances[cid].destroy();delete noteChartInstances[cid];}
+    const canvas=document.getElementById(cid);
+    if (!canvas) return;
+    noteChartInstances[cid]=new Chart(canvas,{
+      type:'bar',
+      data:{
+        labels:noteArr.map(function(e){const k=e[0];return k.length>8?k.slice(0,8)+'…':k;}),
+        datasets:[{
+          data:noteArr.map(function(e){return e[1];}),
+          backgroundColor:catData.cat.color,
+          borderRadius:6,borderSkipped:false,maxBarThickness:36
+        }]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ' '+fmtDur(ctx.raw);}}}},
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},
+          y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},color:'#94a3b8'},beginAtZero:true}
+        }
+      }
+    });
+  }
+}
+
+// ===== 导出 =====
+async function exportCSV() {
+  const { data } = await sb.from('records').select('*').eq('is_running',false).order('date').order('start_time');
+  if (!data||!data.length){showToast('暂无数据');return;}
+  const rows=[['日期','开始','结束','时长(分钟)','分类','备注']];
+  data.forEach(r=>rows.push([r.date,fmtTime(r.start_time),fmtTime(r.end_time),r.duration_minutes||0,r.category_name||'',r.note||'']));
+  const csv=rows.map(r=>r.map(v=>'"'+v+'"').join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='时间记录_'+toDateStr(new Date())+'.csv';a.click();
+}
+async function exportJSON() {
+  const { data } = await sb.from('records').select('*').eq('is_running',false).order('date');
+  if (!data||!data.length){showToast('暂无数据');return;}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='时间记录_'+toDateStr(new Date())+'.json';a.click();
+}
+
+// ===== 分类管理 =====
+function renderCatManage() {
+  if (!categories.length) {
+    document.getElementById('catManageList').innerHTML='<div style="color:var(--sub);font-size:13px;padding:10px 0;">暂无分类</div>';
+    return;
+  }
+  let html='';
+  categories.forEach(c=>{
+    const noteCount=(c.preset_notes&&c.preset_notes.length)?c.preset_notes.length:0;
+    html+='<div class="cat-manage-item">'+
+      '<div class="cat-manage-icon" style="background:'+c.color+'20;">'+c.icon+'</div>'+
+      '<span class="cat-manage-name">'+escHtml(c.name)+'</span>'+
+      (noteCount?'<span style="font-size:11px;color:var(--sub);background:var(--bg);padding:2px 8px;border-radius:10px;margin-right:2px;">'+noteCount+'条备注</span>':'')+
+      '<div style="width:14px;height:14px;border-radius:50%;background:'+c.color+';margin-right:2px;flex-shrink:0;"></div>'+
+      '<button class="btn-icon" onclick="openEditCat(\''+c.id+'\')">✏️</button>'+
+      '<button class="btn-icon" onclick="deleteCategory(\''+c.id+'\')">🗑️</button>'+
+      '</div>';
+  });
+  document.getElementById('catManageList').innerHTML=html;
+}
+
+// ===== 功能2：编辑分类（含固定备注管理）=====
+function openEditCat(id) {
+  const cat=categories.find(c=>c.id===id);
+  if (!cat) return;
+  document.getElementById('editCatId').value=id;
+  document.getElementById('editCatName').value=cat.name;
+  document.getElementById('editCatIcon').value=cat.icon;
+  document.getElementById('editCatColor').value=cat.color;
+  // 加载固定备注
+  editingCatNotes=(cat.preset_notes&&cat.preset_notes.length)?[...cat.preset_notes]:[];
+  renderEditCatNotes();
+  document.getElementById('newCatNote').value='';
+  document.getElementById('editCatModal').classList.add('show');
+}
+
+function renderEditCatNotes() {
+  const wrap=document.getElementById('editCatNoteList');
+  if (!editingCatNotes.length) {
+    wrap.innerHTML='<span style="font-size:12px;color:var(--sub);">暂无固定备注</span>';
+    return;
+  }
+  wrap.innerHTML=editingCatNotes.map((n,i)=>
+    '<span class="cat-note-tag">'+
+      escHtml(n)+
+      '<span class="cat-note-tag-del" onclick="removeCatNote('+i+')">×</span>'+
+    '</span>'
+  ).join('');
+}
+
+function addCatNote() {
+  const input=document.getElementById('newCatNote');
+  const val=input.value.trim();
+  if (!val){showToast('⚠️ 请输入备注内容');return;}
+  if (editingCatNotes.includes(val)){showToast('⚠️ 已存在相同备注');return;}
+  editingCatNotes.push(val);
+  input.value='';
+  renderEditCatNotes();
+}
+
+function removeCatNote(idx) {
+  editingCatNotes.splice(idx,1);
+  renderEditCatNotes();
+}
+
+// 支持回车添加备注
+document.addEventListener('DOMContentLoaded',function(){
+  const inp=document.getElementById('newCatNote');
+  if (inp) inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addCatNote();}});
+});
+
+async function saveEditCat() {
+  const id=document.getElementById('editCatId').value;
+  const name=document.getElementById('editCatName').value.trim();
+  const icon=document.getElementById('editCatIcon').value.trim()||'📌';
+  const color=document.getElementById('editCatColor').value;
+  if (!name){showToast('⚠️ 请输入分类名称');return;}
+  const { error } = await sb.from('categories').update({
+    name, icon, color, preset_notes: editingCatNotes
+  }).eq('id',id);
+  if (error){showToast('❌ 保存失败：'+error.message);return;}
+  await sb.from('records').update({category_name:name}).eq('category_id',id);
+  showToast('✅ 分类已更新');
+  closeModal('editCatModal');
+  await loadCategories();
+  renderCatManage();
+}
+
+async function addCategory() {
+  const name=document.getElementById('newCatName').value.trim();
+  const icon=document.getElementById('newCatIcon').value.trim()||'📌';
+  const color=document.getElementById('newCatColor').value;
+  if (!name){showToast('⚠️ 请输入分类名称');return;}
+  const { error } = await sb.from('categories').insert({name,icon,color,preset_notes:[]});
+  if (error){showToast('❌ 添加失败');return;}
+  document.getElementById('newCatName').value='';
+  document.getElementById('newCatIcon').value='';
+  showToast('✅ 分类已添加');
+  await loadCategories();
+  renderCatManage();
+}
+
+async function deleteCategory(id) {
+  if (!confirm('删除此分类？相关记录不受影响')) return;
+  await sb.from('categories').delete().eq('id',id);
+  await loadCategories();
+  renderCatManage();
+  showToast('🗑️ 已删除');
+}
+
+init();
+</script>
+</body>
+</html>
