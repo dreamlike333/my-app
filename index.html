@@ -31,7 +31,6 @@ document.currentScript.after(_ml);
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:90px;}
 
-/* 离线/错误提示条*/
 .conn-bar{position:fixed;top:0;left:0;right:0;z-index:9999;padding:8px 16px;font-size:13px;font-weight:600;text-align:center;transform:translateY(-100%);transition:transform 0.3s;}
 .conn-bar.show{transform:translateY(0);}
 .conn-bar.offline{background:#ef4444;color:white;}
@@ -72,7 +71,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,0.35);transition:opacity 0.2s,transform 0.15s;}
 .btn-primary:active{opacity:0.88;transform:scale(0.98);}
 
-/* ===== 新版备注区域 ===== */
+/*备注区域 */
 .note-area{background:var(--bg);border-radius:14px;padding:12px;border:1.5px solid var(--border);transition:border-color 0.2s;}
 .note-area:focus-within{border-color:var(--primary);}
 .note-input-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
@@ -155,7 +154,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .modal-overlay.show{opacity:1;pointer-events:all;}
 .modal{background:white;border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-height:88vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);}
 .modal-overlay.show .modal{transform:translateY(0);}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto20px;}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .modal-title{font-size:18px;font-weight:700;}
 .modal-close{background:var(--bg);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--sub);}
@@ -176,7 +175,6 @@ select.form-input{appearance:none;-webkit-appearance:none;}
 .cat-note-add-input:focus{border-color:var(--primary);}
 .cat-note-add-btn{padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:10px;font-size:13px;cursor:pointer;white-space:nowrap;}
 
-/*历史日期导航 */
 .history-date-nav{display:flex;align-items:center;gap:8px;background:white;border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;box-shadow:var(--shadow);}
 .history-date-selects{display:flex;gap:6px;flex:1;}
 .history-date-selects select{flex:1;padding:8px 4px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);background:var(--bg);outline:none;appearance:none;-webkit-appearance:none;text-align:center;}
@@ -185,7 +183,6 @@ select.form-input{appearance:none;-webkit-appearance:none;}
 .history-nav-btn:active{background:var(--primary);color:white;border-color:var(--primary);}
 .history-today-btn{background:var(--primary);color:white;border:none;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;}
 
-/* 重叠弹窗 */
 .dialog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
 .dialog-box{background:white;border-radius:20px;padding:24px 20px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 .dialog-title{font-size:16px;font-weight:700;margin-bottom:10px;}
@@ -195,7 +192,6 @@ select.form-input{appearance:none;-webkit-appearance:none;}
 .dialog-btn:active{background:var(--primary);color:white;border-color:var(--primary);}
 .dialog-btn-cancel{background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;padding:8px;text-align:center;width:100%;}
 
-/* 自动填充询问弹窗 */
 .autofill-modal{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;}
 .autofill-box{background:white;border-radius:20px;padding:24px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
 .autofill-title{font-size:17px;font-weight:700;margin-bottom:8px;}
@@ -206,20 +202,125 @@ select.form-input{appearance:none;-webkit-appearance:none;}
 .autofill-btns{display:flex;gap:8px;}
 .autofill-btn-yes{flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;}
 .autofill-btn-no{flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);color:var(--sub);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;}
+
+/*========================================✨新增：计时结束备注弹窗
+======================================== */
+.timer-remark-overlay{
+  position:fixed;inset:0;
+  background:rgba(15,23,42,0.65);
+  z-index:450;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  backdrop-filter:blur(3px);
+}
+.timer-remark-box{
+  background:white;
+  border-radius:24px;
+  padding:0;
+  max-width:380px;
+  width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,0.22);
+  overflow:hidden;
+  animation:remarkSlideUp 0.38s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes remarkSlideUp{
+  from{transform:translateY(50px) scale(0.95);opacity:0;}
+  to{transform:translateY(0) scale(1);opacity:1;}
+}
+/*顶部渐变头部 */
+.timer-remark-head{
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  padding:22px 20px 18px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;
+}
+.timer-remark-head-icon{
+  width:52px;height:52px;
+  background:rgba(255,255,255,0.2);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.timer-remark-head-info{flex:1;}
+.timer-remark-head-title{
+  font-size:18px;font-weight:800;color:white;margin-bottom:4px;
+}
+.timer-remark-head-sub{
+  font-size:13px;color:rgba(255,255,255,0.8);
+  display:flex;align-items:center;gap:6px;
+}
+.timer-remark-head-dur{
+  background:rgba(255,255,255,0.2);
+  border-radius:20px;padding:2px 10px;
+  font-size:13px;font-weight:700;color:white;
+}
+.timer-remark-close-btn{
+  position:absolute;top:14px;right:14px;
+  background:rgba(255,255,255,0.2);border:none;
+  width:28px;height:28px;border-radius:50%;
+  cursor:pointer;font-size:14px;color:white;
+  display:flex;align-items:center;justify-content:center;
+}
+/* 内容区 */
+.timer-remark-body{padding:20px 20px 0;}
+.timer-remark-input-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:12px;padding:4px 4px 4px 14px;
+  margin-bottom:14px;transition:border-color 0.2s;
+}
+.timer-remark-input-wrap:focus-within{border-color:var(--primary);background:white;}
+.timer-remark-input{
+  flex:1;border:none;background:transparent;
+  font-size:15px;color:var(--text);outline:none;
+  padding:8px 0;
+}
+.timer-remark-input::placeholder{color:#94a3b8;}
+.timer-remark-clear{
+  background:var(--border);border:none;
+  width:24px;height:24px;border-radius:50%;
+  cursor:pointer;font-size:12px;color:var(--sub);
+  display:none;align-items:center;justify-content:center;
+  flex-shrink:0;margin-right:6px;
+}
+.timer-remark-clear.show{display:flex;}
+/* 底部按钮 */
+.timer-remark-footer{
+  display:flex;gap:10px;
+  padding:16px 20px 20px;
+}
+.timer-remark-save{
+  flex:1;padding:14px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white;border:none;border-radius:14px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 14px rgba(99,102,241,0.35);
+  transition:opacity 0.2s,transform 0.15s;
+}
+.timer-remark-save:active{opacity:0.88;transform:scale(0.98);}
+.timer-remark-skip{
+  padding:14px 18px;
+  background:var(--bg);border:1.5px solid var(--border);
+  color:var(--sub);border-radius:14px;
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all 0.15s;
+}
+.timer-remark-skip:active{background:var(--border);}
+/* 芯片区域复用已有样式，补充间距 */
+.timer-remark-chips-wrap{margin-bottom:4px;}
 </style>
 </head>
 <body>
 
-<!-- 网络状态条-->
 <div class="conn-bar" id="connBar"></div>
 
 <div class="header">
   <h1>
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-    </svg>
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     时间记录器
-  </h1><div class="date" id="headerDate"></div>
+  </h1>
+  <div class="date" id="headerDate"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -281,7 +382,8 @@ select.form-input{appearance:none;-webkit-appearance:none;}
     <button class="stat-tab active" onclick="switchStatTab('day',this)">今日</button>
     <button class="stat-tab" onclick="switchStatTab('week',this)">本周</button>
     <button class="stat-tab" onclick="switchStatTab('month',this)">本月</button>
-    <button class="stat-tab" onclick="switchStatTab('year',this)">全年</button><button class="stat-tab" onclick="switchStatTab('pick',this)">指定日</button>
+    <button class="stat-tab" onclick="switchStatTab('year',this)">全年</button>
+    <button class="stat-tab" onclick="switchStatTab('pick',this)">指定日</button>
   </div>
   <div class="stat-date-pick" id="statDatePick">
     <input type="date" class="form-input" id="statPickDate" onchange="loadStats()">
@@ -310,7 +412,8 @@ select.form-input{appearance:none;-webkit-appearance:none;}
     <button class="export-btn" onclick="exportCSV()">
       <div class="export-icon" style="background:#dcfce7;">📊</div>
       <div><div class="export-name">导出 CSV</div><div class="export-desc">可用Excel / Numbers打开</div></div>
-    </button><button class="export-btn" onclick="exportJSON()">
+    </button>
+    <button class="export-btn" onclick="exportJSON()">
       <div class="export-icon" style="background:#dbeafe;">📋</div>
       <div><div class="export-name">导出 JSON</div><div class="export-desc">完整数据备份</div></div>
     </button>
@@ -329,7 +432,7 @@ select.form-input{appearance:none;-webkit-appearance:none;}
 <!-- 底部导航 -->
 <nav class="nav">
   <button class="nav-btn active" onclick="switchPage('home',this)">
-    <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>首页
+    <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 1215 22"/></svg></div>首页
   </button>
   <button class="nav-btn" onclick="switchPage('history',this)">
     <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>历史
@@ -338,7 +441,7 @@ select.form-input{appearance:none;-webkit-appearance:none;}
     <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>统计
   </button>
   <button class="nav-btn" onclick="switchPage('export',this)">
-    <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 01014.14M4.93 4.93a10 10 0 000 14.14"/></svg></div>更多
+    <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0114.14M4.93 4.93a10 10 0 000 14.14"/></svg></div>更多
   </button>
 </nav>
 
@@ -407,12 +510,50 @@ select.form-input{appearance:none;-webkit-appearance:none;}
   </div>
 </div>
 
+<!-- ✨ 新增：计时结束备注弹窗 -->
+<div class="timer-remark-overlay" id="timerRemarkModal" style="display:none;">
+  <div class="timer-remark-box">
+    <!-- 头部 -->
+    <div class="timer-remark-head">
+      <div class="timer-remark-head-icon" id="trHeadIcon">✅</div>
+      <div class="timer-remark-head-info">
+        <div class="timer-remark-head-title" id="trHeadTitle">计时结束</div>
+        <div class="timer-remark-head-sub">
+          <span id="trHeadCat"></span>
+          <span class="timer-remark-head-dur" id="trHeadDur"></span>
+        </div>
+      </div><button class="timer-remark-close-btn" onclick="skipTimerRemark()">✕</button>
+    </div>
+    <!-- 内容 -->
+    <div class="timer-remark-body">
+      <div class="form-label" style="margin-bottom:10px;">添加备注（可选）</div>
+      <!-- 输入框 -->
+      <div class="timer-remark-input-wrap">
+        <input
+          type="text"
+          class="timer-remark-input"
+          id="timerRemarkInput"
+          placeholder="输入自定义备注..."
+          oninput="_onTimerNoteInput()">
+        <button class="timer-remark-clear" id="timerRemarkClear" onclick="_clearTimerInput()">✕</button>
+      </div>
+      <!-- 固定备注芯片 -->
+      <div class="timer-remark-chips-wrap" id="timerRemarkPresets"></div>
+      <!-- 历史备注芯片 -->
+      <div class="timer-remark-chips-wrap" id="timerRemarkHistory"></div>
+    </div><!-- 底部按钮 -->
+    <div class="timer-remark-footer">
+      <button class="timer-remark-save" onclick="saveTimerRemark()">💾 保存备注</button>
+      <button class="timer-remark-skip" onclick="skipTimerRemark()">跳过</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL='https://buyrevhbxypsekpmctmj.supabase.co';
 const SUPABASE_KEY='sb_publishable_aDBUcvGvxxxyr1XS37JX3g_WnE3s6x-';
 let sb;
 
-//===== 功能4：网络重连 =====
 let _connRetry=0;
 let _connOk=false;
 
@@ -437,7 +578,7 @@ async function checkConn(){
       sb.from('categories').select('id').limit(1),
       new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))
     ]);
-    if(r&&r.error&&r.error.message&&r.error.message.includes('timeout')) throw new Error('timeout');
+    if(r&&r.error&&r.error.message&&r.error.message.includes('timeout'))throw new Error('timeout');
     return true;
   }catch(e){return false;}
 }
@@ -450,7 +591,7 @@ function showConnBar(type,msg){
 }
 
 async function ensureConn(){
-  if(_connOk) return true;
+  if(_connOk)return true;
   showConnBar('reconnecting','🔄 正在重新连接...');
   for(let i=0;i<3;i++){
     await new Promise(r=>setTimeout(r,1500*Math.pow(2,i)));
@@ -462,7 +603,6 @@ async function ensureConn(){
   return false;
 }
 
-// 监听网络状态
 window.addEventListener('online',async()=>{
   _connOk=false;
   const ok=await ensureConn();
@@ -473,12 +613,11 @@ window.addEventListener('offline',()=>{
   showConnBar('offline','📵 网络已断开');
 });
 
-// 安全的 supabase 查询包装
 async function sbQuery(fn){
   try{
     if(!_connOk){
       const ok=await ensureConn();
-      if(!ok) return {data:null,error:{message:'无网络连接'}};
+      if(!ok)return{data:null,error:{message:'无网络连接'}};
     }
     const result=await fn();
     if(result&&result.error&&(result.error.message||'').toLowerCase().includes('fetch')){
@@ -488,7 +627,7 @@ async function sbQuery(fn){
     return result;
   }catch(e){
     _connOk=false;
-    return {data:null,error:{message:e.message}};
+    return{data:null,error:{message:e.message}};
   }
 }
 
@@ -509,13 +648,19 @@ let pendingAutofillDate=null;
 let pendingAutofillGaps=[];
 let pendingAutofillCat=null;
 
-// 备注状态存储：noteStates[areaId] = { selected: string, historyNotes: [{note,count}] }
+// 备注状态
 const noteStates={};
+
+//✨ 新增：计时结束备注弹窗状态
+let _trRecordId=null;   // 停止后的记录ID
+let _trCatId=null;      // 分类ID
+let _trDur=0;           // 时长（分钟）
+let _trSelected='';     // 当前选中/输入的备注
 
 //===== 工具函数 =====
 function toDateStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function nowTimeStr(){const n=new Date();return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
-function formatDateCN(d){const days=['周日','周一','周二','周三','周四','周五','周六'];return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+days[d.getDay()];}
+function formatDateCN(d){const days=['周日','周一','周二','周三','周四','周五','周六'];return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'+days[d.getDay()];}
 function fmtDur(mins){if(mins===null||mins===undefined||isNaN(mins))return'-';mins=Math.max(0,Math.round(mins));if(mins<60)return mins+'分钟';const h=Math.floor(mins/60),m=mins%60;return m?h+'h '+m+'m':h+'h';}
 function fmtTime(t){return t?t.slice(0,5):'--:--';}
 function calcMins(start,end){const[sh,sm]=start.split(':').map(Number);const[eh,em]=end.split(':').map(Number);return(eh*60+em)-(sh*60+sm);}
@@ -530,7 +675,6 @@ async function init(){
   const ok=await checkConn();
   _connOk=ok;
   if(!ok){showConnBar('offline','❌ 无法连接服务器，请检查网络');return;}
-
   const today=new Date();
   document.getElementById('headerDate').textContent=formatDateCN(today);
   document.getElementById('fDate').value=toDateStr(today);
@@ -544,7 +688,6 @@ async function init(){
   setInterval(checkDayChange,60000);
 }
 
-//===== 跨天检测 =====
 let _lastDay=new Date().getDate();
 function checkDayChange(){
   const now=new Date();
@@ -562,22 +705,14 @@ async function checkYesterdayAutofill(){
   const today=new Date();
   const yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
   const yStr=toDateStr(yesterday);
-
-  // 检查 localStorage 是否已处理过昨天
   const doneKey='autofill_done_'+yStr;
-  if(localStorage.getItem(doneKey)) return;
-
-  const {data}=await sbQuery(()=>sb.from('records').select('*').eq('date',yStr).eq('is_running',false).order('start_time'));
-  if(!data) return;
-
-  // 检查是否已有自动填充记录
+  if(localStorage.getItem(doneKey))return;
+  const{data}=await sbQuery(()=>sb.from('records').select('*').eq('date',yStr).eq('is_running',false).order('start_time'));
+  if(!data)return;
   const hasAutoFill=data.some(r=>r.note==='自动填充');
   if(hasAutoFill){localStorage.setItem(doneKey,'1');return;}
-
   const gaps=findGaps(data,'00:00','23:59').filter(g=>calcMins(g.start,g.end)>0);
   if(!gaps.length){localStorage.setItem(doneKey,'1');return;}
-
-  // 有空白，弹窗询问
   let otherCat=categories.find(c=>c.name==='其他');
   if(!otherCat){
     const{data:nc}=await sbQuery(()=>sb.from('categories').insert({name:'其他',icon:'⬜',color:'#94a3b8'}).select().single());
@@ -585,9 +720,7 @@ async function checkYesterdayAutofill(){
   }
   pendingAutofillDate=yStr;
   pendingAutofillGaps=gaps;
-  pendingAutofillCat=otherCat;
-
-  document.getElementById('autofillSub').textContent=`${yesterday.getMonth()+1}月${yesterday.getDate()}日 共有${gaps.length} 段时间未记录，是否用「其他」自动填充？`;
+  pendingAutofillCat=otherCat;document.getElementById('autofillSub').textContent=`${yesterday.getMonth()+1}月${yesterday.getDate()}日 共有${gaps.length} 段时间未记录，是否用「其他」自动填充？`;
   const gapHtml=gaps.map(g=>`<div class="autofill-gap-item">⏱ ${g.start} → ${g.end}（${fmtDur(calcMins(g.start,g.end))}）</div>`).join('');
   document.getElementById('autofillGaps').innerHTML=gapHtml;
   document.getElementById('autofillModal').style.display='flex';
@@ -597,7 +730,7 @@ async function doAutofill(yes){
   document.getElementById('autofillModal').style.display='none';
   const doneKey='autofill_done_'+pendingAutofillDate;
   localStorage.setItem(doneKey,'1');
-  if(!yes||!pendingAutofillCat||!pendingAutofillGaps.length) return;
+  if(!yes||!pendingAutofillCat||!pendingAutofillGaps.length)return;
   for(const gap of pendingAutofillGaps){
     await sbQuery(()=>sb.from('records').insert({
       date:pendingAutofillDate,start_time:gap.start,end_time:gap.end,
@@ -670,8 +803,7 @@ function switchPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
-  if(name==='history'){syncHistorySelectors();loadHistory();}
+  btn.classList.add('active');if(name==='history'){syncHistorySelectors();loadHistory();}
   if(name==='stats')loadStats();
   if(name==='export')renderCatManage();
 }
@@ -695,15 +827,12 @@ function renderCatSelect(id){
   sel.innerHTML=categories.map(c=>'<option value="'+c.id+'">'+c.icon+' '+c.name+'</option>').join('');
 }
 
-// ===== 功能5：新版备注区域 =====
-//渲染备注区域（固定标签+历史标签+输入框+管理）
+// ===== 备注区域 =====
 async function renderNoteArea(areaId,catSelectId,currentNote){
   const area=document.getElementById(areaId);if(!area)return;
   const catId=document.getElementById(catSelectId)?document.getElementById(catSelectId).value:'';
   const cat=categories.find(c=>c.id===catId);
   const presets=(cat&&cat.preset_notes)?cat.preset_notes:[];
-
-  // 获取历史备注
   const{data}=await sbQuery(()=>sb.from('records').select('note').eq('category_id',catId).eq('is_running',false));
   const noteCount={};
   (data||[]).forEach(r=>{
@@ -711,71 +840,54 @@ async function renderNoteArea(areaId,catSelectId,currentNote){
       const k=r.note.trim();noteCount[k]=(noteCount[k]||0)+1;
     }
   });
-  // 历史备注（不含固定备注）
   const histNotes=Object.entries(noteCount).filter(([k])=>!presets.includes(k)).sort((a,b)=>b[1]-a[1]).slice(0,8);
-
-  // 初始化状态
   if(!noteStates[areaId])noteStates[areaId]={selected:'',editing:null};
   if(currentNote!==undefined)noteStates[areaId].selected=currentNote||'';
-
   _renderNoteAreaHTML(areaId,catSelectId,presets,histNotes,noteStates[areaId].selected,catId);
 }
 
 function _renderNoteAreaHTML(areaId,catSelectId,presets,histNotes,selected,catId){
   const area=document.getElementById(areaId);if(!area)return;
-
   let html='<div class="note-area">';
-  // 输入框行
   html+='<div class="note-input-row">';
   html+='<input type="text" class="note-text-input" id="'+areaId+'_input" placeholder="输入备注..." value="'+escHtml(selected)+'" oninput="_onNoteInput(\''+areaId+'\',\''+catSelectId+'\')">';
   html+='</div>';
-
-  // 固定备注标签
   if(presets.length){
     html+='<div class="note-section-label">📌 固定备注</div>';
     html+='<div class="note-chips">';
     presets.forEach((n,i)=>{
       const isSel=selected===n;
       html+='<span class="note-chip'+(isSel?' selected':'')+'" onclick="_selectNoteChip(\''+areaId+'\',\''+catSelectId+'\',\''+escAttr(n)+'\')">'+escHtml(n);
-      // 固定备注可删除（从分类preset中移除）
       html+='<span class="note-chip-del" onclick="event.stopPropagation();_deletePresetNote(\''+catId+'\','+i+',\''+areaId+'\',\''+catSelectId+'\')">×</span>';
       html+='</span>';
     });
     html+='</div>';
   }
-
-  // 历史备注标签
   if(histNotes.length){
     html+='<div class="note-section-label">🕐 历史备注</div>';
     html+='<div class="note-chips">';
     histNotes.forEach(([n,cnt])=>{
       const isSel=selected===n;
-      html+='<span class="note-chip history-chip'+(isSel?' selected':'')+'" onclick="_selectNoteChip(\''+areaId+'\',\''+catSelectId+'\',\''+escAttr(n)+'\')">'+escHtml(n)+'<span style="font-size:10px;opacity:0.6;margin-left:2px;">'+cnt+'</span></span>';});
+      html+='<span class="note-chip history-chip'+(isSel?' selected':'')+'" onclick="_selectNoteChip(\''+areaId+'\',\''+catSelectId+'\',\''+escAttr(n)+'\')">'+escHtml(n)+'<span style="font-size:10px;opacity:0.6;margin-left:2px;">'+cnt+'</span></span>';
+    });
     html+='</div>';
   }
-
-  // 快速添加固定备注
   html+='<div class="note-add-row">';
   html+='<input type="text" class="note-add-input" id="'+areaId+'_addInput" placeholder="添加为固定备注..." onkeydown="if(event.key===\'Enter\'){event.preventDefault();_addPresetFromArea(\''+areaId+'\',\''+catSelectId+'\');}">';
   html+='<button class="note-add-btn" onclick="_addPresetFromArea(\''+areaId+'\',\''+catSelectId+'\')">+ 固定</button>';
   html+='</div>';
-
   html+='</div>';
   area.innerHTML=html;
 }
 
 function _onNoteInput(areaId,catSelectId){
-  const input=document.getElementById(areaId+'_input');
-  if(!input)return;
+  const input=document.getElementById(areaId+'_input');if(!input)return;
   const val=input.value;
   if(!noteStates[areaId])noteStates[areaId]={selected:''};
   noteStates[areaId].selected=val;
-  // 取消所有chip选中
-  document.querySelectorAll('#'+areaId+' .note-chip').forEach(c=>c.classList.remove('selected'));
-  // 如果输入值匹配某个chip，高亮它
   document.querySelectorAll('#'+areaId+' .note-chip').forEach(c=>{
     const text=c.childNodes[0]&&c.childNodes[0].textContent?c.childNodes[0].textContent.trim():'';
-    if(text===val)c.classList.add('selected');
+    c.classList.toggle('selected',text===val&&val!=='');
   });
 }
 
@@ -785,8 +897,7 @@ function _selectNoteChip(areaId,catSelectId,val){
   const newVal=prev===val?'':val;
   noteStates[areaId].selected=newVal;
   const input=document.getElementById(areaId+'_input');
-  if(input)input.value=newVal;// 更新chip高亮
-  document.querySelectorAll('#'+areaId+' .note-chip').forEach(c=>{
+  if(input)input.value=newVal;document.querySelectorAll('#'+areaId+' .note-chip').forEach(c=>{
     const text=c.childNodes[0]&&c.childNodes[0].textContent?c.childNodes[0].textContent.trim():'';
     c.classList.toggle('selected',text===newVal&&newVal!=='');
   });
@@ -797,10 +908,8 @@ function getNoteValue(areaId){
   return input?input.value.trim():'';
 }
 
-//从备注区域快速添加固定备注到分类
 async function _addPresetFromArea(areaId,catSelectId){
-  const addInput=document.getElementById(areaId+'_addInput');
-  if(!addInput)return;
+  const addInput=document.getElementById(areaId+'_addInput');if(!addInput)return;
   const val=addInput.value.trim();
   if(!val){showToast('⚠️ 请输入备注内容');return;}
   const catId=document.getElementById(catSelectId)?document.getElementById(catSelectId).value:'';
@@ -810,14 +919,12 @@ async function _addPresetFromArea(areaId,catSelectId){
   presets.push(val);
   const{error}=await sbQuery(()=>sb.from('categories').update({preset_notes:presets}).eq('id',catId));
   if(error){showToast('❌ 添加失败');return;}
-  cat.preset_notes=presets;
-  addInput.value='';
+  cat.preset_notes=presets;addInput.value='';
   showToast('✅ 已添加固定备注');
   const curNote=getNoteValue(areaId);
   await renderNoteArea(areaId,catSelectId,curNote);
 }
 
-// 从备注区域删除固定备注
 async function _deletePresetNote(catId,idx,areaId,catSelectId){
   const cat=categories.find(c=>c.id===catId);if(!cat)return;
   const presets=[...(cat.preset_notes||[])];
@@ -826,8 +933,7 @@ async function _deletePresetNote(catId,idx,areaId,catSelectId){
   presets.splice(idx,1);
   const{error}=await sbQuery(()=>sb.from('categories').update({preset_notes:presets}).eq('id',catId));
   if(error){showToast('❌ 删除失败');return;}
-  cat.preset_notes=presets;
-  showToast('🗑️ 已删除');const curNote=getNoteValue(areaId);
+  cat.preset_notes=presets;showToast('🗑️ 已删除');const curNote=getNoteValue(areaId);
   await renderNoteArea(areaId,catSelectId,curNote);
 }
 
@@ -865,16 +971,161 @@ function renderRunning(){
     '<div class="running-start">开始于 '+fmtTime(runningRecord.start_time)+'</div>'+
     '<button class="stop-btn" onclick="stopTimer()">⏹ 停止计时</button></div>';
 }
+
+//✨ 修改后的 stopTimer：停止后弹出备注弹窗
 async function stopTimer(){
-  if(!runningRecord)return;clearInterval(timerInterval);
+  if(!runningRecord)return;
+  clearInterval(timerInterval);
+
   const elapsed=Math.floor((Date.now()-startTimestamp)/1000);
-  const dur=Math.round(elapsed/60);
-  await sbQuery(()=>sb.from('records').update({end_time:nowTimeStr(),duration_minutes:Math.max(0,dur),is_running:false}).eq('id',runningRecord.id));
-  showToast('✅ 已记录 '+fmtDur(dur));
-  runningRecord=null;startTimestamp=null;document.getElementById('runningCard').innerHTML='';
+  const dur=Math.max(0,Math.round(elapsed/60));
+
+  // 保存停止信息，供备注弹窗使用
+  _trRecordId=runningRecord.id;
+  _trCatId=runningRecord.category_id;
+  _trDur=dur;
+
+  // 更新记录（先不写备注，等弹窗确认）
+  await sbQuery(()=>sb.from('records').update({
+    end_time:nowTimeStr(),
+    duration_minutes:dur,
+    is_running:false
+  }).eq('id',runningRecord.id));
+
+  // 清空计时状态
+  runningRecord=null;
+  startTimestamp=null;
+  document.getElementById('runningCard').innerHTML='';
+
+  // 弹出备注弹窗
+  await showTimerRemarkModal(_trRecordId,_trCatId,_trDur);
 }
 
-// ===== 功能1：跨天分割 =====
+// ✨ 显示计时结束备注弹窗
+async function showTimerRemarkModal(recordId,catId,dur){
+  const cat=categories.find(c=>c.id===catId)||{icon:'⏱',name:'未知',color:'#6366f1'};
+  const presets=(cat.preset_notes&&cat.preset_notes.length)?cat.preset_notes:[];
+
+  //拉取历史备注
+  const{data}=await sbQuery(()=>sb.from('records').select('note').eq('category_id',catId).eq('is_running',false));
+  const noteCount={};
+  (data||[]).forEach(r=>{
+    if(r.note&&r.note.trim()&&r.note.trim()!=='自动填充'){
+      const k=r.note.trim();noteCount[k]=(noteCount[k]||0)+1;
+    }
+  });
+  const histNotes=Object.entries(noteCount)
+    .filter(([k])=>!presets.includes(k))
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,8);
+
+  // 重置状态
+  _trSelected='';
+  document.getElementById('timerRemarkInput').value='';
+  document.getElementById('timerRemarkClear').classList.remove('show');
+
+  // 填充头部信息
+  document.getElementById('trHeadIcon').textContent=cat.icon||'✅';
+  document.getElementById('trHeadTitle').textContent='计时结束 · '+cat.name;
+  document.getElementById('trHeadCat').textContent='';
+  document.getElementById('trHeadDur').textContent=fmtDur(dur);
+
+  // 渲染固定备注芯片
+  let presetsHtml='';
+  if(presets.length){
+    presetsHtml+='<div class="note-section-label">📌 固定备注</div>';
+    presetsHtml+='<div class="note-chips" style="margin-bottom:4px;">';
+    presets.forEach(n=>{
+      presetsHtml+='<span class="note-chip" onclick="_selectTimerChip(\''+escAttr(n)+'\')">'+escHtml(n)+'</span>';
+    });
+    presetsHtml+='</div>';
+  }
+  document.getElementById('timerRemarkPresets').innerHTML=presetsHtml;
+
+  // 渲染历史备注芯片
+  let histHtml='';
+  if(histNotes.length){
+    histHtml+='<div class="note-section-label">🕐 历史备注</div>';
+    histHtml+='<div class="note-chips" style="margin-bottom:4px;">';
+    histNotes.forEach(([n,cnt])=>{
+      histHtml+='<span class="note-chip history-chip" onclick="_selectTimerChip(\''+escAttr(n)+'\')">'+escHtml(n)+'<span style="font-size:10px;opacity:0.6;margin-left:2px;">'+cnt+'</span></span>';
+    });
+    histHtml+='</div>';
+  }
+  document.getElementById('timerRemarkHistory').innerHTML=histHtml;
+
+  // 显示弹窗
+  document.getElementById('timerRemarkModal').style.display='flex';
+  // 自动聚焦输入框
+  setTimeout(()=>{
+    const inp=document.getElementById('timerRemarkInput');
+    if(inp)inp.focus();
+  },400);
+}
+
+// ✨ 点击芯片选择备注
+function _selectTimerChip(val){
+  const prev=_trSelected;
+  const newVal=(prev===val)?'':val;
+  _trSelected=newVal;
+  const inp=document.getElementById('timerRemarkInput');
+  if(inp)inp.value=newVal;
+  // 清除按钮显示
+  const clearBtn=document.getElementById('timerRemarkClear');
+  if(clearBtn)clearBtn.classList.toggle('show',newVal!=='');
+  // 更新芯片高亮
+  _updateTimerChipHighlight(newVal);
+}
+
+// ✨ 输入框输入时同步状态
+function _onTimerNoteInput(){
+  const inp=document.getElementById('timerRemarkInput');
+  const val=inp?inp.value:'';
+  _trSelected=val;
+  const clearBtn=document.getElementById('timerRemarkClear');
+  if(clearBtn)clearBtn.classList.toggle('show',val!=='');
+  _updateTimerChipHighlight(val);
+}
+
+// ✨ 清空输入
+function _clearTimerInput(){
+  _trSelected='';
+  const inp=document.getElementById('timerRemarkInput');
+  if(inp){inp.value='';inp.focus();}
+  const clearBtn=document.getElementById('timerRemarkClear');
+  if(clearBtn)clearBtn.classList.remove('show');
+  _updateTimerChipHighlight('');
+}
+
+// ✨ 更新芯片高亮状态
+function _updateTimerChipHighlight(val){
+  document.querySelectorAll('#timerRemarkModal .note-chip').forEach(c=>{
+    const text=c.childNodes[0]&&c.childNodes[0].textContent?c.childNodes[0].textContent.trim():'';
+    c.classList.toggle('selected',text===val&&val!=='');
+  });
+}
+
+// ✨ 保存备注
+async function saveTimerRemark(){
+  const note=(document.getElementById('timerRemarkInput').value||'').trim();
+  if(_trRecordId){
+    await sbQuery(()=>sb.from('records').update({note:note||null}).eq('id',_trRecordId));
+  }
+  document.getElementById('timerRemarkModal').style.display='none';
+  showToast('✅ 已记录 '+fmtDur(_trDur)+(note?' · '+note:''));
+  _trRecordId=null;_trCatId=null;_trDur=0;_trSelected='';
+  loadHistory();
+}
+
+// ✨ 跳过备注
+async function skipTimerRemark(){
+  document.getElementById('timerRemarkModal').style.display='none';
+  showToast('✅ 已记录 '+fmtDur(_trDur));
+  _trRecordId=null;_trCatId=null;_trDur=0;_trSelected='';
+  loadHistory();
+}
+
+// ===== 跨天分割=====
 function splitCrossDay(date,start,end){
   const[sh,sm]=start.split(':').map(Number);
   const[eh,em]=end.split(':').map(Number);
@@ -887,7 +1138,7 @@ function splitCrossDay(date,start,end){
   ];
 }
 
-// ===== 功能2：时间重叠检测 =====
+// ===== 时间重叠检测 =====
 async function checkOverlap(date,start,end,excludeId){
   let query=sb.from('records').select('*').eq('date',date).eq('is_running',false);
   if(excludeId)query=query.neq('id',excludeId);
@@ -914,8 +1165,7 @@ function showOverlapDialog(overlaps,newStart,newEnd){
       <div class="dialog-btns">
         <button class="dialog-btn" id="ob-new">✅ 以新记录为准（裁剪已有）</button>
         <button class="dialog-btn" id="ob-old">📌 以已有记录为准（裁剪新记录）</button>
-        <button class="dialog-btn" id="ob-keep">💾 直接保存（保留重叠）</button>
-        <button class="dialog-btn-cancel" id="ob-cancel">取消</button>
+        <button class="dialog-btn" id="ob-keep">💾 直接保存（保留重叠）</button><button class="dialog-btn-cancel" id="ob-cancel">取消</button>
       </div></div>`;
     document.body.appendChild(div);
     div.querySelector('#ob-new').onclick=()=>{document.body.removeChild(div);resolve('new');};
@@ -956,8 +1206,7 @@ function resolveOverlapOldWins(overlaps,newStart,newEnd){
       if(rStart>seg.start)newSegs.push({start:seg.start,end:rStart});
       if(rEnd<seg.end)newSegs.push({start:rEnd,end:seg.end});
     }
-    segs=newSegs;
-  }
+    segs=newSegs;}
   return segs.filter(s=>s.end-s.start>0).map(s=>({start:minsToTime(s.start),end:minsToTime(s.end),mins:s.end-s.start}));
 }
 
@@ -972,8 +1221,6 @@ async function addRecord(){
   const note=getNoteValue('fNoteArea');
   if(!date||!start||!end||!catId){showToast('⚠️ 请填写完整信息');return;}
   const cat=categories.find(c=>c.id===catId);
-
-  // 功能2：跨天检测
   const crossDay=splitCrossDay(date,start,end);
   if(crossDay){
     if(!confirm(`检测到跨天时间段（${start}~${end}），将自动拆分为：\n① ${crossDay[0].date} ${crossDay[0].start}~${crossDay[0].end}\n② ${crossDay[1].date} ${crossDay[1].start}~${crossDay[1].end}\n\n确认添加？`))return;
@@ -1024,16 +1271,11 @@ async function loadHistory(){
   const list=document.getElementById('historyList');
   const tipEl=document.getElementById('fillTip');
   list.innerHTML='<div class="loading">加载中...</div>';tipEl.innerHTML='';
-
   const{data}=await sbQuery(()=>sb.from('records').select('*').eq('date',date).eq('is_running',false).order('start_time'));
   let filledRecords=data?[...data]:[];
-
-  // 历史页不再自动填充，只展示数据
-  // 如果有正在计时，提示
   if(runningRecord){
     tipEl.innerHTML='<div class="fill-warn">⏳ 有计时进行中</div>';
   }
-
   if(!filledRecords.length){
     list.innerHTML='<div class="empty"><div class="empty-icon">📭</div><p>这天暂无记录</p></div>';return;
   }
@@ -1084,7 +1326,6 @@ async function openEdit(id){
   document.getElementById('eEnd').value=data.end_time?data.end_time.slice(0,5):'';
   renderCatSelect('eCat');
   document.getElementById('eCat').value=data.category_id;
-  //渲染备注区域，传入当前备注
   await renderNoteArea('eNoteArea','eCat',data.note||'');
   document.getElementById('editModal').classList.add('show');
 }
@@ -1097,7 +1338,6 @@ async function saveEdit(){
   const note=getNoteValue('eNoteArea');
   if(!date||!start||!end){showToast('⚠️ 请填写完整');return;}
   const cat=categories.find(c=>c.id===catId);
-
   const crossDay=splitCrossDay(date,start,end);
   if(crossDay){
     if(!confirm('检测到跨天时间段，将拆分为两段保存，确认？'))return;
@@ -1106,7 +1346,6 @@ async function saveEdit(){
     showToast('✅ 已拆分保存');closeModal('editModal');loadHistory();return;
   }
   if(end<=start){showToast('⚠️ 结束时间必须晚于开始时间');return;}
-
   const overlaps=await checkOverlap(date,start,end,editingId);
   if(overlaps.length>0){
     const choice=await showOverlapDialog(overlaps,start,end);
@@ -1125,7 +1364,7 @@ async function saveEdit(){
   showToast('✅ 已保存');closeModal('editModal');loadHistory();
 }
 
-// ===== 功能3：统计（含指定日）=====
+// ===== 统计 =====
 function switchStatTab(tab,btn){
   currentStatTab=tab;
   document.querySelectorAll('.stat-tab').forEach(b=>b.classList.remove('active'));
@@ -1151,13 +1390,11 @@ async function loadStats(){
     if(!pv){document.getElementById('statTotal').textContent='0m';document.getElementById('statCount').textContent='0';return;}
     start=end=pv;isSingleDay=true;
   }
-
   const{data}=await sbQuery(()=>sb.from('records').select('*').gte('date',start).lte('date',end).eq('is_running',false));
   const records=data||[];
   const total=records.reduce((s,r)=>s+(r.duration_minutes||0),0);
   document.getElementById('statTotal').textContent=total?fmtDur(total):'0m';
   document.getElementById('statCount').textContent=records.length;
-
   const catMap={};
   records.forEach(r=>{
     const cat=categories.find(c=>c.id===r.category_id)||{name:r.category_name||'未知',color:'#6366f1',icon:'📌'};
@@ -1170,7 +1407,6 @@ async function loadStats(){
   const catArr=Object.values(catMap).sort((a,b)=>b.mins-a.mins);
   const maxMins=catArr[0]?catArr[0].mins:1;
   window._catStatData=catArr;
-
   let html='';
   catArr.forEach(function(item,idx){
     const cat=item.cat,mins=item.mins,notes=item.notes;
@@ -1184,8 +1420,9 @@ async function loadStats(){
         '<span class="cat-stat-time">'+fmtDur(mins)+'</span>'+
         '<span class="cat-stat-arrow" id="arr-'+idx+'">▶</span>'+
       '</div>'+
-      '<div class="note-stats" id="ns-'+idx+'">'+
-        '<div class="note-chart-wrap"><canvas id="nc-'+idx+'"></canvas></div>';noteArr.forEach(function(entry){
+      '<div class="note-stats" id="ns-'+idx+'">';
+    html+='<div class="note-chart-wrap"><canvas id="nc-'+idx+'"></canvas></div>';
+    noteArr.forEach(function(entry){
       const k=entry[0],v=entry[1];
       html+='<div class="note-stat-item">'+
         '<span class="note-stat-label">'+escHtml(k)+'</span>'+
@@ -1196,7 +1433,6 @@ async function loadStats(){
     html+='</div></div>';
   });
   document.getElementById('catStats').innerHTML=html||'<div class="empty"><p>暂无数据</p></div>';
-
   if(pieChartInstance){pieChartInstance.destroy();pieChartInstance=null;}
   if(catArr.length&&total>0){
     pieChartInstance=new Chart(document.getElementById('pieChart'),{
@@ -1205,17 +1441,13 @@ async function loadStats(){
       options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
         plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'600'},padding:14,boxWidth:10,boxHeight:10,usePointStyle:true,pointStyle:'circle'}},tooltip:{callbacks:{label:function(ctx){return ' '+fmtDur(ctx.raw)+'（'+(total>0?(ctx.raw/total*100).toFixed(1):0)+'%）';}}}}}
     });
-  }
-
-  //柱状图
-  let chartLabels=[],chartData=[],chartColors=[];
+  }let chartLabels=[],chartData=[],chartColors=[];
   if(isSingleDay){
-    // 单日按小时
     const hm={};
     records.forEach(r=>{const h=parseInt(r.start_time.slice(0,2));hm[h]=(hm[h]||0)+(r.duration_minutes||0);});
     for(let i=0;i<=23;i++){chartLabels.push(i+'');chartData.push(hm[i]||0);chartColors.push(i===now.getHours()?'#6366f1':'#c7d2fe');}
   }else if(currentStatTab==='week'){
-    constdn=['一','二','三','四','五','六','日'],dm={};
+    const dn=['一','二','三','四','五','六','日'],dm={};
     records.forEach(r=>{const d=new Date(r.date+'T12:00:00');const k=(d.getDay()+6)%7;dm[k]=(dm[k]||0)+(r.duration_minutes||0);});
     for(let i=0;i<7;i++){chartLabels.push('周'+dn[i]);chartData.push(+((dm[i]||0)/60).toFixed(1));chartColors.push(i===((now.getDay()+6)%7)?'#6366f1':'#c7d2fe');}
   }else if(currentStatTab==='month'){
@@ -1227,7 +1459,6 @@ async function loadStats(){
     records.forEach(r=>{const m=parseInt(r.date.split('-')[1])-1;mm[m]=(mm[m]||0)+(r.duration_minutes||0);});
     for(let i=0;i<12;i++){chartLabels.push((i+1)+'月');chartData.push(+((mm[i]||0)/60).toFixed(1));chartColors.push(i===now.getMonth()?'#6366f1':'#c7d2fe');}
   }
-
   if(barChartInstance){barChartInstance.destroy();barChartInstance=null;}
   barChartInstance=new Chart(document.getElementById('barChart'),{
     type:'bar',
@@ -1317,6 +1548,9 @@ function removeCatNote(idx){editingCatNotes.splice(idx,1);renderEditCatNotes();}
 document.addEventListener('DOMContentLoaded',function(){
   const inp=document.getElementById('newCatNote');
   if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addCatNote();}});
+  //✨ 备注输入框回车保存
+  const trInp=document.getElementById('timerRemarkInput');
+  if(trInp)trInp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();saveTimerRemark();}});
 });
 
 async function saveEditCat(){
