@@ -1,279 +1,276 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>时间记录器</title>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="时间记录器">
-<meta name="theme-color" content="#6366f1">
-<link rel="apple-touch-icon" href="https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg">
-<link rel="icon" href="https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg">
-<script>
-const manifest = {
-  name:"时间记录器",short_name:"时间记录",start_url:location.href,
-  display:"standalone",background_color:"#f0f4ff",theme_color:"#6366f1",
-  icons:[{src:"https://lazyman.yixiaai.com/files/493397/52b11d58-4025-4b5c-bfff-0f70aa9a2c2d.jpeg",sizes:"512x512",type:"image/jpeg",purpose:"any maskable"}]
-};
-const _mb=new Blob([JSON.stringify(manifest)],{type:'application/json'});
-const _ml=document.createElement('link');_ml.rel='manifest';_ml.href=URL.createObjectURL(_mb);
-document.currentScript.after(_ml);
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#f0f4ff;--card:#fff;--text:#1e293b;--sub:#64748b;
-  --border:#e2e8f0;--primary:#6366f1;--radius:16px;
-  --shadow:0 2px 16px rgba(99,102,241,0.10);
+let categories=[];
+let runningRecord=null;
+let timerInterval=null;
+let startTimestamp=null;
+let currentStatTab='day';
+let editingId=null;
+let barChartInstance=null;
+let pieChartInstance=null;
+const noteChartInstances={};
+let editingCatNotes=[];
+let historyCurrentDate=new Date();
+
+// 自动填充相关
+let pendingAutofillDate=null;
+let pendingAutofillGaps=[];
+let pendingAutofillCat=null;
+
+// 备注状态
+const noteStates={};
+
+// 计时结束备注弹窗状态
+let _trRecordId=null;
+let _trCatId=null;
+let _trDur=0;
+let _trSelected='';
+
+// ✨ 新增：计时器持久化
+function saveTimerState(){
+  if(runningRecord && startTimestamp){
+    localStorage.setItem('timer_running', JSON.stringify({
+      record: runningRecord,
+      startTime: startTimestamp
+    }));
+  } else {
+    localStorage.removeItem('timer_running');
+  }
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:90px;}
 
-.conn-bar{position:fixed;top:0;left:0;right:0;z-index:9999;padding:8px 16px;font-size:13px;font-weight:600;text-align:center;transform:translateY(-100%);transition:transform 0.3s;}
-.conn-bar.show{transform:translateY(0);}
-.conn-bar.offline{background:#ef4444;color:white;}
-.conn-bar.reconnecting{background:#f59e0b;color:white;}
-.conn-bar.online{background:#22c55e;color:white;}
-
-.header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);padding:20px 20px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(99,102,241,0.3);}
-.header h1{font-size:20px;font-weight:700;color:white;display:flex;align-items:center;gap:8px;}
-.header .date{font-size:13px;color:rgba(255,255,255,0.8);margin-top:4px;}
-.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,0.06);}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 8px;font-size:11px;color:#94a3b8;cursor:pointer;border:none;background:none;gap:4px;transition:color 0.2s;}
-.nav-btn.active{color:var(--primary);}
-.nav-btn .nav-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;}
-.page{display:none;padding:16px;max-width:480px;margin:0 auto;}
-.page.active{display:block;}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
-.card-title{font-size:12px;font-weight:700;color:var(--sub);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
-.running-card{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border-radius:var(--radius);padding:24px 20px;margin-bottom:12px;box-shadow:0 8px 30px rgba(99,102,241,0.4);position:relative;overflow:hidden;}
-.running-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:rgba(255,255,255,0.08);border-radius:50%;}
-.running-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 10px;font-size:12px;margin-bottom:12px;}
-.running-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 1.2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
-.running-cat{font-size:20px;font-weight:700;margin-bottom:10px;}
-.running-time{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:3px;line-height:1;margin-bottom:8px;}
-.running-start{font-size:12px;opacity:0.75;}
-.stop-btn{margin-top:18px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.5);color:white;padding:13px;border-radius:14px;font-size:15px;font-weight:600;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
-.stop-btn:active{background:rgba(255,255,255,0.35);}
-.cats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.cat-btn{display:flex;flex-direction:column;align-items:center;padding:16px 8px 12px;border-radius:16px;border:none;cursor:pointer;transition:transform 0.15s;background:var(--bg);}
-.cat-btn:active{transform:scale(0.92);}
-.cat-icon{font-size:28px;margin-bottom:6px;}
-.cat-name{font-size:12px;font-weight:600;}
-.form-group{margin-bottom:14px;}
-.form-label{font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px;display:block;}
-.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;background:var(--bg);color:var(--text);outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
-.form-input:focus{border-color:var(--primary);background:white;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(99,102,241,0.35);transition:opacity 0.2s,transform 0.15s;}
-.btn-primary:active{opacity:0.88;transform:scale(0.98);}
-
-.note-area{background:var(--bg);border-radius:14px;padding:12px;border:1.5px solid var(--border);transition:border-color 0.2s;}
-.note-area:focus-within{border-color:var(--primary);}
-.note-input-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
-.note-text-input{flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:white;color:var(--text);outline:none;}
-.note-text-input:focus{border-color:var(--primary);}
-.note-chips{display:flex;flex-wrap:wrap;gap:6px;}
-.note-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--text);transition:all 0.15s;user-select:none;}
-.note-chip.selected{background:var(--primary);color:white;border-color:var(--primary);}
-.note-chip.history-chip{background:#f8fafc;border-style:dashed;}
-.note-chip.history-chip.selected{background:var(--primary);color:white;border-style:solid;}
-.note-chip-del{font-size:13px;color:#94a3b8;line-height:1;padding:0 2px;transition:color 0.15s;}
-.note-chip-del:hover{color:#ef4444;}
-.note-chip.selected .note-chip-del{color:rgba(255,255,255,0.7);}
-.note-chip.selected .note-chip-del:hover{color:white;}
-.note-section-label{font-size:10px;color:var(--sub);font-weight:600;letter-spacing:0.5px;margin-bottom:6px;margin-top:8px;}
-.note-add-row{display:flex;gap:6px;margin-top:8px;}
-.note-add-input{flex:1;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;background:white;color:var(--text);outline:none;}
-.note-add-input:focus{border-color:var(--primary);}
-.note-add-btn{padding:6px 12px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap;}
-
-.record-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
-.record-item:last-child{border-bottom:none;}
-.record-dot{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.record-info{flex:1;min-width:0;}
-.record-cat{font-size:14px;font-weight:600;}
-.record-time{font-size:12px;color:var(--sub);margin-top:2px;}
-.record-note{font-size:12px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.record-dur{font-size:13px;font-weight:700;color:var(--primary);flex-shrink:0;}
-.record-actions{display:flex;gap:4px;}
-.btn-icon{background:var(--bg);border:none;cursor:pointer;padding:6px;border-radius:10px;font-size:15px;transition:background 0.15s;}
-.btn-icon:active{background:var(--border);}
-
-.stat-tabs{display:flex;background:white;border-radius:14px;padding:4px;margin-bottom:16px;box-shadow:var(--shadow);flex-wrap:wrap;gap:2px;}
-.stat-tab{flex:1;text-align:center;padding:9px 4px;border-radius:11px;font-size:12px;font-weight:600;cursor:pointer;color:var(--sub);border:none;background:none;transition:all 0.2s;min-width:0;}
-.stat-tab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 3px 10px rgba(99,102,241,0.35);}
-.stat-date-pick{display:none;margin-bottom:12px;}
-.stat-date-pick.show{display:block;}
-.stat-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.stat-card{background:white;border-radius:14px;padding:16px;box-shadow:var(--shadow);}
-.stat-val{font-size:26px;font-weight:800;color:var(--primary);}
-.stat-lbl{font-size:11px;color:var(--sub);margin-top:3px;font-weight:500;}
-.chart-wrap{background:white;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;}
-.chart-title{font-size:12px;font-weight:700;color:var(--sub);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;}
-.chart-inner{height:180px;position:relative;}
-.pie-wrap{background:white;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;}
-.pie-inner{height:200px;position:relative;}
-.cat-stat-item{border-bottom:1px solid var(--border);}
-.cat-stat-item:last-child{border-bottom:none;}
-.cat-stat-header{display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;user-select:none;}
-.cat-stat-bar-wrap{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;}
-.cat-stat-bar{height:100%;border-radius:3px;transition:width 0.6s ease;}
-.cat-stat-time{font-size:12px;font-weight:700;color:var(--sub);min-width:52px;text-align:right;}
-.cat-stat-arrow{font-size:11px;color:var(--sub);transition:transform 0.25s;flex-shrink:0;margin-left:2px;}
-.cat-stat-arrow.open{transform:rotate(90deg);}
-.note-stats{display:none;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:10px;}
-.note-stats.open{display:block;}
-.note-chart-wrap{height:150px;position:relative;margin-bottom:10px;}
-.note-stat-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);}
-.note-stat-item:last-child{border-bottom:none;}
-.note-stat-label{font-size:12px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.note-stat-bar-wrap{width:70px;height:5px;background:white;border-radius:3px;overflow:hidden;}
-.note-stat-bar{height:100%;border-radius:3px;}
-.note-stat-time{font-size:11px;font-weight:700;color:var(--sub);min-width:44px;text-align:right;}
-
-.export-btn{display:flex;align-items:center;gap:14px;padding:16px;background:white;border-radius:14px;border:none;width:100%;cursor:pointer;margin-bottom:10px;box-shadow:var(--shadow);transition:transform 0.15s;}
-.export-btn:active{transform:scale(0.98);}
-.export-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.export-name{font-size:15px;font-weight:600;text-align:left;}
-.export-desc{font-size:12px;color:var(--sub);margin-top:2px;text-align:left;}
-
-.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1e293b;color:white;padding:12px 22px;border-radius:14px;font-size:14px;font-weight:500;z-index:9999;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.empty{text-align:center;padding:40px 20px;color:var(--sub);}
-.empty-icon{font-size:44px;margin-bottom:10px;}
-.empty p{font-size:14px;}
-.loading{text-align:center;padding:30px;color:var(--sub);font-size:14px;}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(2px);}
-.modal-overlay.show{opacity:1;pointer-events:all;}
-.modal{background:white;border-radius:24px 24px 0 0;padding:24px 20px;width:100%;max-height:88vh;overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.34,1.2,0.64,1);}
-.modal-overlay.show .modal{transform:translateY(0);}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.modal-title{font-size:18px;font-weight:700;}
-.modal-close{background:var(--bg);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--sub);}
-select.form-input{appearance:none;-webkit-appearance:none;}
-.cat-manage-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);}
-.cat-manage-item:last-child{border-bottom:none;}
-.cat-manage-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.cat-manage-name{flex:1;font-size:14px;font-weight:600;}
-.fill-tip{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#166534;display:flex;align-items:center;gap:8px;}
-.fill-warn{background:linear-gradient(135deg,#fef9c3,#fef08a);border:1px solid #fde047;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#854d0e;display:flex;align-items:flex-start;gap:8px;}
-.cat-notes-section{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);}
-.cat-notes-title{font-size:11px;color:var(--sub);font-weight:600;margin-bottom:8px;}
-.cat-note-tag-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-.cat-note-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--bg);border:1.5px solid var(--border);border-radius:20px;font-size:12px;}
-.cat-note-tag-del{color:#ef4444;cursor:pointer;font-size:13px;line-height:1;}
-.cat-note-add-row{display:flex;gap:6px;}
-.cat-note-add-input{flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;background:var(--bg);color:var(--text);outline:none;}
-.cat-note-add-input:focus{border-color:var(--primary);}
-.cat-note-add-btn{padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:10px;font-size:13px;cursor:pointer;white-space:nowrap;}
-
-.history-date-nav{display:flex;align-items:center;gap:8px;background:white;border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;box-shadow:var(--shadow);}
-.history-date-selects{display:flex;gap:6px;flex:1;}
-.history-date-selects select{flex:1;padding:8px 4px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);background:var(--bg);outline:none;appearance:none;-webkit-appearance:none;text-align:center;}
-.history-date-selects select:focus{border-color:var(--primary);}
-.history-nav-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:16px;cursor:pointer;color:var(--sub);transition:all 0.15s;flex-shrink:0;}
-.history-nav-btn:active{background:var(--primary);color:white;border-color:var(--primary);}
-.history-today-btn{background:var(--primary);color:white;border:none;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;}
-
-.dialog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
-.dialog-box{background:white;border-radius:20px;padding:24px 20px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
-.dialog-title{font-size:16px;font-weight:700;margin-bottom:10px;}
-.dialog-desc{font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6;}
-.dialog-btns{display:flex;flex-direction:column;gap:8px;}
-.dialog-btn{padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.15s;width:100%;}
-.dialog-btn:active{background:var(--primary);color:white;border-color:var(--primary);}
-.dialog-btn-cancel{background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;padding:8px;text-align:center;width:100%;}
-
-/* ✨ 新增：带复选框的自动填充弹窗 */
-.autofill-modal{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;}
-.autofill-box{background:white;border-radius:20px;padding:24px 20px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:80vh;overflow-y:auto;}
-.autofill-title{font-size:17px;font-weight:700;margin-bottom:8px;}
-.autofill-sub{font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6;}
-.autofill-gaps{background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:16px;max-height:300px;overflow-y:auto;}
-.autofill-gap-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text);padding:8px 0;border-bottom:1px solid var(--border);}
-.autofill-gap-item:last-child{border-bottom:none;}
-.autofill-checkbox{width:18px;height:18px;cursor:pointer;flex-shrink:0;}
-.autofill-gap-info{flex:1;}
-.autofill-btns{display:flex;gap:8px;}
-.autofill-btn-yes{flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;}
-.autofill-btn-no{flex:1;padding:12px;background:var(--bg);border:1.5px solid var(--border);color:var(--sub);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;}
-
-.timer-remark-overlay{
-  position:fixed;inset:0;
-  background:rgba(15,23,42,0.65);
-  z-index:450;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-  backdrop-filter:blur(3px);
+function restoreTimerState(){
+  const saved = localStorage.getItem('timer_running');
+  if(saved){
+    try{
+      const data = JSON.parse(saved);
+      runningRecord = data.record;
+      startTimestamp = data.startTime;
+      startTimer();
+      return true;
+    }catch(e){
+      localStorage.removeItem('timer_running');
+    }
+  }
+  return false;
 }
-.timer-remark-box{
-  background:white;
-  border-radius:24px;
-  padding:0;
-  max-width:380px;
-  width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,0.22);
-  overflow:hidden;
-  animation:remarkSlideUp 0.38s cubic-bezier(0.34,1.2,0.64,1);
+async function checkRunning(){
+  // 先尝试从本地恢复
+  if(restoreTimerState()){
+    console.log('从本地恢复计时器');
+  }
+  
+  // 再从数据库检查
+  const{data}=await sbQuery(()=>sb.from('records').select('*').eq('is_running',true).maybeSingle());
+  if(data){
+    runningRecord=data;
+    const parts=data.start_time.slice(0,5).split(':').map(Number);
+    const sd=new Date(data.date+'T00:00:00');sd.setHours(parts[0],parts[1],0,0);
+    startTimestamp=sd.getTime();
+    startTimer();
+    saveTimerState();
+  }
 }
-@keyframes remarkSlideUp{
-  from{transform:translateY(50px) scale(0.95);opacity:0;}
-  to{transform:translateY(0) scale(1);opacity:1;}
+async function quickStart(catId){
+  if(runningRecord){showToast('⚠️ 请先停止当前计时');return;}
+  const cat=categories.find(c=>c.id===catId);
+  const now=new Date();
+  startTimestamp=now.getTime();
+  const{data,error}=await sbQuery(()=>sb.from('records').insert({
+    date:toDateStr(now),start_time:nowTimeStr(),category_id:catId,category_name:cat.name,is_running:true
+  }).select().single());
+  if(error){showToast('❌ 启动失败');return;}
+  runningRecord=data;
+  saveTimerState(); // ✨ 保存状态
+  startTimer();
+  showToast('▶️ 开始：'+cat.icon+' '+cat.name);
 }
-.timer-remark-head{
-  background:linear-gradient(135deg,#6366f1,#8b5cf6);
-  padding:22px 20px 18px;
-  display:flex;align-items:center;gap:14px;
-  position:relative;
+async function stopTimer(){
+  if(!runningRecord)return;
+  clearInterval(timerInterval);
+
+  const now = new Date();
+  const endTime = nowTimeStr();
+  const endDate = toDateStr(now);
+  
+  // 检查是否跨天
+  const startDate = runningRecord.date;
+  const startTime = runningRecord.start_time.slice(0,5);
+  
+  if(startDate !== endDate){
+    // 跨天了，需要分割
+    showToast('🌙 检测到跨天计时，自动分割为两段');
+    
+    // 第一段：开始时间到当天23:59
+    const dur1 = calcMins(startTime, '23:59');
+    await sbQuery(()=>sb.from('records').update({
+      end_time:'23:59',
+      duration_minutes:dur1,
+      is_running:false
+    }).eq('id',runningRecord.id));
+    
+    // 第二段：第二天00:00到结束时间
+    const dur2 = calcMins('00:00', endTime);
+    const cat = categories.find(c=>c.id===runningRecord.category_id);
+    const{data:newRecord}=await sbQuery(()=>sb.from('records').insert({
+      date:endDate,
+      start_time:'00:00',
+      end_time:endTime,
+      duration_minutes:dur2,
+      category_id:runningRecord.category_id,
+      category_name:runningRecord.category_name,
+      is_running:false
+    }).select().single());
+    
+    // 清空计时状态
+    runningRecord=null;
+    startTimestamp=null;
+    saveTimerState();
+    document.getElementById('runningCard').innerHTML='';
+    
+    // 弹出备注弹窗（针对第二段）
+    if(newRecord){
+      await showTimerRemarkModal(newRecord.id, newRecord.category_id, dur2);
+    }
+  } else {
+    // 没有跨天，正常处理
+    const elapsed=Math.floor((Date.now()-startTimestamp)/1000);
+    const dur=Math.max(0,Math.round(elapsed/60));
+
+    _trRecordId=runningRecord.id;
+    _trCatId=runningRecord.category_id;
+    _trDur=dur;
+
+    await sbQuery(()=>sb.from('records').update({
+      end_time:endTime,
+      duration_minutes:dur,
+      is_running:false
+    }).eq('id',runningRecord.id));
+
+    runningRecord=null;
+    startTimestamp=null;
+    saveTimerState();
+    document.getElementById('runningCard').innerHTML='';
+
+    await showTimerRemarkModal(_trRecordId,_trCatId,_trDur);
+  }
 }
-.timer-remark-head-icon{
-  width:52px;height:52px;
-  background:rgba(255,255,255,0.2);
-  border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;flex-shrink:0;
+<!-- ✨ 修改：带复选框的自动填充弹窗 -->
+<div class="autofill-modal" id="autofillModal" style="display:none;">
+  <div class="autofill-box">
+    <div class="autofill-title">📋 发现昨天有空白时段</div>
+    <div class="autofill-sub" id="autofillSub"></div>
+    <div class="autofill-gaps" id="autofillGaps"></div>
+    <div class="autofill-btns">
+      <button class="autofill-btn-yes" onclick="doAutofillSelected()">✅ 填充选中项</button>
+      <button class="autofill-btn-no" onclick="doAutofill(false)">❌ 取消</button>
+    </div>
+  </div>
+</div>
+async function checkYesterdayAutofill(){
+  // ✨ 如果正在计时，不提示填充
+  if(runningRecord){
+    console.log('正在计时中，跳过自动填充提示');
+    return;
+  }
+  
+  const today=new Date();
+  const yesterday=new Date(today);
+  yesterday.setDate(yesterday.getDate()-1);
+  const yStr=toDateStr(yesterday);
+  const doneKey='autofill_done_'+yStr;
+  
+  if(localStorage.getItem(doneKey))return;
+  
+  const{data}=await sbQuery(()=>sb.from('records').select('*').eq('date',yStr).eq('is_running',false).order('start_time'));
+  if(!data)return;
+  
+  const hasAutoFill=data.some(r=>r.note==='自动填充');
+  if(hasAutoFill){localStorage.setItem(doneKey,'1');return;}
+  
+  const gaps=findGaps(data,'00:00','23:59').filter(g=>calcMins(g.start,g.end)>0);
+  if(!gaps.length){localStorage.setItem(doneKey,'1');return;}
+  
+  let otherCat=categories.find(c=>c.name==='其他');
+  if(!otherCat){
+    const{data:nc}=await sbQuery(()=>sb.from('categories').insert({name:'其他',icon:'⬜',color:'#94a3b8'}).select().single());
+    if(nc){categories.push(nc);otherCat=nc;renderCatsGrid();renderCatSelect('fCat');}
+  }
+  
+  pendingAutofillDate=yStr;
+  pendingAutofillGaps=gaps;
+  pendingAutofillCat=otherCat;
+  
+  document.getElementById('autofillSub').textContent=`${yesterday.getMonth()+1}月${yesterday.getDate()}日 共有${gaps.length}段时间未记录，选择需要填充的时段：`;
+  
+  // ✨ 生成带复选框的列表
+  const gapHtml=gaps.map((g,idx)=>`
+    <div class="autofill-gap-item">
+      <input type="checkbox" class="autofill-checkbox" id="gap-${idx}" checked>
+      <label for="gap-${idx}" class="autofill-gap-info" style="cursor:pointer;">
+        ⏱ ${g.start} → ${g.end}（${fmtDur(calcMins(g.start,g.end))}）
+      </label>
+    </div>
+  `).join('');
+  
+  document.getElementById('autofillGaps').innerHTML=gapHtml;
+  document.getElementById('autofillModal').style.display='flex';
 }
-.timer-remark-head-info{flex:1;}
-.timer-remark-head-title{
-  font-size:18px;font-weight:800;color:white;margin-bottom:4px;
+async function doAutofillSelected(){
+  document.getElementById('autofillModal').style.display='none';
+  const doneKey='autofill_done_'+pendingAutofillDate;
+  localStorage.setItem(doneKey,'1');
+  
+  if(!pendingAutofillCat||!pendingAutofillGaps.length)return;
+  
+  let filledCount = 0;
+  for(let i=0; i<pendingAutofillGaps.length; i++){
+    const checkbox = document.getElementById('gap-'+i);
+    if(checkbox && checkbox.checked){
+      const gap = pendingAutofillGaps[i];
+      await sbQuery(()=>sb.from('records').insert({
+        date:pendingAutofillDate,
+        start_time:gap.start,
+        end_time:gap.end,
+        duration_minutes:calcMins(gap.start,gap.end),
+        category_id:pendingAutofillCat.id,
+        category_name:'其他',
+        note:'自动填充',
+        is_running:false
+      }));
+      filledCount++;
+    }
+  }
+  
+  if(filledCount > 0){
+    showToast('✅ 已填充 '+filledCount+' 段空白');
+    loadHistory();
+  } else {
+    showToast('ℹ️ 未选择任何时段');
+  }
 }
-.timer-remark-head-sub{
-  font-size:13px;color:rgba(255,255,255,0.8);
-  display:flex;align-items:center;gap:6px;
+
+async function doAutofill(yes){
+  document.getElementById('autofillModal').style.display='none';
+  const doneKey='autofill_done_'+pendingAutofillDate;
+  localStorage.setItem(doneKey,'1');
 }
-.timer-remark-head-dur{
-  background:rgba(255,255,255,0.2);
-  border-radius:20px;padding:2px 10px;
-  font-size:13px;font-weight:700;color:white;
-}
-.timer-remark-close-btn{
-  position:absolute;top:14px;right:14px;
-  background:rgba(255,255,255,0.2);border:none;
-  width:28px;height:28px;border-radius:50%;
-  cursor:pointer;font-size:14px;color:white;
-  display:flex;align-items:center;justify-content:center;
-}
-.timer-remark-body{padding:20px 20px 0;}
-.timer-remark-input-wrap{
-  display:flex;align-items:center;gap:8px;
-  background:var(--bg);border:1.5px solid var(--border);
-  border-radius:12px;padding:4px 4px 4px 14px;
-  margin-bottom:14px;transition:border-color 0.2s;
-}
-.timer-remark-input-wrap:focus-within{border-color:var(--primary);background:white;}
-.timer-remark-input{
-  flex:1;border:none;background:transparent;
-  font-size:15px;color:var(--text);outline:none;
+    /* ✨ 新增：带复选框的自动填充弹窗样式 */
+.autofill-gap-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  color:var(--text);
   padding:8px 0;
+  border-bottom:1px solid var(--border);
 }
-.timer-remark-input::placeholder{color:#94a3b8;}
-.timer-remark-clear{
-  background:var(--border);border:none;
-  width:24px;height:24px;border-radius:50%;
-  cursor:pointer
+.autofill-gap-item:last-child{border-bottom:none;}
+.autofill-checkbox{
+  width:18px;
+  height:18px;
+  cursor:pointer;
+  flex-shrink:0;
+  accent-color:var(--primary);
+}
+.autofill-gap-info{
+  flex:1;
+  user-select:none;
+}
